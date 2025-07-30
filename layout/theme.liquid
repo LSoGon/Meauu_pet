@@ -24,6 +24,8 @@
   <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
 
+  {{ 'market-standards.css' | asset_url | stylesheet_tag }}
+  
   {{ content_for_header }}
 </head>
 
