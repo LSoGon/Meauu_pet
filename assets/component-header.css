@@ -8,7 +8,7 @@
 }
 
 .header-container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -29,18 +29,12 @@
 .header-logo-link {
   display: block;
   text-decoration: none;
-  transition: transform 0.3s ease;
-}
-
-.header-logo-link:hover {
-  transform: scale(1.05);
 }
 
 .header-logo-text {
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  transition: color 0.3s ease;
 }
 
 /* Search Bar */
@@ -67,8 +61,7 @@
 }
 
 .header-icon-link:hover {
-  color: #fab41e;
-  transform: scale(1.05)
+  color: #FF6B6B;
 }
 
 .header-icon {
@@ -94,7 +87,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #fab41e;
+  background-color: #FF6B6B;
   color: white;
   border-radius: 50%;
   width: 20px;
@@ -141,7 +134,7 @@
 .header-nav-link {
   text-decoration: none;
   color: #333;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   transition: color 0.2s ease;
   display: flex;
@@ -154,8 +147,7 @@
 }
 
 .header-nav-link:hover {
-  color: #fab41e;
-  transform: scale(1.07)
+  color: #FF6B6B;
 }
 
 .header-nav-more svg {
