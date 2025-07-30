@@ -3,27 +3,42 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    background: #f8f9fa;
+    background: #ffffff;
   }
 
   .banner-carousel__container {
     position: relative;
-    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
     height: 400px;
+    overflow: hidden;
   }
 
   .banner-carousel__track {
     display: flex;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     height: 100%;
-    width: 100%;
+    transform: translateX(-100px);
   }
 
   .banner-carousel__slide {
-    flex: 0 0 100%;
+    flex: 0 0 calc(100% - 200px);
     position: relative;
     height: 100%;
     overflow: hidden;
+    margin: 0 20px;
+    border-radius: 12px;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .banner-carousel__slide:not(.active) {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  .banner-carousel__slide.active {
+    opacity: 1;
+    transform: scale(1);
   }
 
   .banner-carousel__image {
@@ -94,10 +109,10 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.95);
     border: none;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -105,25 +120,26 @@
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 3;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
 
   .banner-carousel__nav:hover {
     background: rgba(255,255,255,1);
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
 
   .banner-carousel__nav--prev {
-    left: 20px;
+    left: 30px;
   }
 
   .banner-carousel__nav--next {
-    right: 20px;
+    right: 30px;
   }
 
   .banner-carousel__nav svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     fill: #333;
   }
 
@@ -159,6 +175,21 @@
       height: 300px;
     }
 
+    .banner-carousel__track {
+      transform: translateX(0);
+    }
+
+    .banner-carousel__slide {
+      flex: 0 0 100%;
+      margin: 0;
+      border-radius: 8px;
+    }
+
+    .banner-carousel__slide:not(.active) {
+      opacity: 1;
+      transform: scale(1);
+    }
+
     .banner-carousel__content {
       left: 16px;
       right: 16px;
@@ -179,11 +210,16 @@
     }
 
     .banner-carousel__nav--prev {
-      left: 10px;
+      left: 15px;
     }
 
     .banner-carousel__nav--next {
-      right: 10px;
+      right: 15px;
+    }
+
+    .banner-carousel__nav svg {
+      width: 16px;
+      height: 16px;
     }
   }
 
@@ -281,6 +317,13 @@
 
   if (totalSlides <= 1) return;
 
+  // Função para atualizar classes ativas
+  function updateActiveSlides() {
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === currentSlide);
+    });
+  }
+
   // Função para ir para um slide específico
   window.goToSlide = function(index) {
     currentSlide = index;
@@ -301,14 +344,23 @@
 
   // Atualizar posição do carrossel
   function updateCarousel() {
-    const translateX = -currentSlide * 100;
-    track.style.transform = `translateX(${translateX}%)`;
+    // Calcular offset considerando o espaçamento e preview
+    const slideWidth = track.querySelector('.banner-carousel__slide').offsetWidth + 40; // 40px = margin total
+    const translateX = -100 - (currentSlide * slideWidth);
+    
+    track.style.transform = `translateX(${translateX}px)`;
+    
+    // Atualizar classes ativas
+    updateActiveSlides();
     
     // Atualizar indicadores
     indicators.forEach((indicator, index) => {
       indicator.classList.toggle('active', index === currentSlide);
     });
   }
+
+  // Inicializar
+  updateActiveSlides();
 
   // Auto-play (opcional)
   {% if section.settings.auto_rotate %}
@@ -371,6 +423,11 @@
     } else if (e.key === 'ArrowRight') {
       nextSlide();
     }
+  });
+
+  // Ajustar em resize
+  window.addEventListener('resize', () => {
+    updateCarousel();
   });
 })();
 </script>
