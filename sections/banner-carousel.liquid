@@ -1,6 +1,476 @@
-{% schema %}
-  {
-    "name": "Section name",
-    "settings": []
+{%- style -%}
+  .banner-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #f8f9fa;
   }
+
+  .banner-carousel__container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+  }
+
+  .banner-carousel__track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: 100%;
+    width: 100%;
+  }
+
+  .banner-carousel__slide {
+    flex: 0 0 100%;
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .banner-carousel__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .banner-carousel__content {
+    position: absolute;
+    top: 50%;
+    left: var(--container-padding, 24px);
+    transform: translateY(-50%);
+    max-width: 500px;
+    color: white;
+    z-index: 2;
+  }
+
+  .banner-carousel__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .banner-carousel__subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .banner-carousel__button {
+    display: inline-block;
+    background: #ff6b35;
+    color: white;
+    padding: 12px 32px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  }
+
+  .banner-carousel__button:hover {
+    background: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    color: white;
+  }
+
+  /* Overlay para melhorar legibilidade */
+  .banner-carousel__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 70%);
+    z-index: 1;
+  }
+
+  /* Navegação */
+  .banner-carousel__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+  }
+
+  .banner-carousel__nav:hover {
+    background: rgba(255,255,255,1);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .banner-carousel__nav--prev {
+    left: 20px;
+  }
+
+  .banner-carousel__nav--next {
+    right: 20px;
+  }
+
+  .banner-carousel__nav svg {
+    width: 20px;
+    height: 20px;
+    fill: #333;
+  }
+
+  /* Indicadores */
+  .banner-carousel__indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+  }
+
+  .banner-carousel__indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .banner-carousel__indicator.active {
+    background: white;
+    transform: scale(1.2);
+  }
+
+  /* Responsividade */
+  @media screen and (max-width: 768px) {
+    .banner-carousel__container {
+      height: 300px;
+    }
+
+    .banner-carousel__content {
+      left: 16px;
+      right: 16px;
+      max-width: none;
+    }
+
+    .banner-carousel__title {
+      font-size: 1.8rem;
+    }
+
+    .banner-carousel__subtitle {
+      font-size: 1rem;
+    }
+
+    .banner-carousel__nav {
+      width: 40px;
+      height: 40px;
+    }
+
+    .banner-carousel__nav--prev {
+      left: 10px;
+    }
+
+    .banner-carousel__nav--next {
+      right: 10px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .banner-carousel__container {
+      height: 250px;
+    }
+
+    .banner-carousel__title {
+      font-size: 1.5rem;
+    }
+
+    .banner-carousel__button {
+      padding: 10px 24px;
+      font-size: 0.9rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="banner-carousel">
+  <div class="banner-carousel__container">
+    <div class="banner-carousel__track" id="bannerTrack">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'slide' -%}
+            <div class="banner-carousel__slide" {{ block.shopify_attributes }}>
+              {%- if block.settings.image -%}
+                {%- assign image_height = block.settings.image.width | divided_by: block.settings.image.aspect_ratio -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 2000
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '100vw',
+                    widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+                    class: 'banner-carousel__image',
+                    alt: block.settings.image.alt | default: block.settings.heading
+                }}
+              {%- else -%}
+                <div class="banner-carousel__image" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);"></div>
+              {%- endif -%}
+              
+              <div class="banner-carousel__overlay"></div>
+              
+              <div class="banner-carousel__content">
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="banner-carousel__title">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                {%- if block.settings.subheading != blank -%}
+                  <p class="banner-carousel__subtitle">{{ block.settings.subheading | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+                  <a href="{{ block.settings.button_link }}" class="banner-carousel__button">
+                    {{ block.settings.button_label | escape }}
+                  </a>
+                {%- endif -%}
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.blocks.size > 1 -%}
+      <!-- Navegação -->
+      <button class="banner-carousel__nav banner-carousel__nav--prev" onclick="previousSlide()" aria-label="Banner anterior">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+        </svg>
+      </button>
+      <button class="banner-carousel__nav banner-carousel__nav--next" onclick="nextSlide()" aria-label="Próximo banner">
+        <svg viewBox="0 0 24 24">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+        </svg>
+      </button>
+
+      <!-- Indicadores -->
+      <div class="banner-carousel__indicators">
+        {%- for block in section.blocks -%}
+          <button class="banner-carousel__indicator{% if forloop.first %} active{% endif %}" 
+                  onclick="goToSlide({{ forloop.index0 }})" 
+                  aria-label="Ir para banner {{ forloop.index }}"></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+(function() {
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.banner-carousel__slide');
+  const indicators = document.querySelectorAll('.banner-carousel__indicator');
+  const track = document.getElementById('bannerTrack');
+  const totalSlides = slides.length;
+
+  if (totalSlides <= 1) return;
+
+  // Função para ir para um slide específico
+  window.goToSlide = function(index) {
+    currentSlide = index;
+    updateCarousel();
+  };
+
+  // Função para ir para o próximo slide
+  window.nextSlide = function() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateCarousel();
+  };
+
+  // Função para ir para o slide anterior
+  window.previousSlide = function() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateCarousel();
+  };
+
+  // Atualizar posição do carrossel
+  function updateCarousel() {
+    const translateX = -currentSlide * 100;
+    track.style.transform = `translateX(${translateX}%)`;
+    
+    // Atualizar indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.classList.toggle('active', index === currentSlide);
+    });
+  }
+
+  // Auto-play (opcional)
+  {% if section.settings.auto_rotate %}
+    let autoPlayInterval = setInterval(() => {
+      nextSlide();
+    }, {{ section.settings.change_slides_speed | times: 1000 }});
+
+    // Pausar auto-play quando hover
+    const carousel = document.querySelector('.banner-carousel');
+    carousel.addEventListener('mouseenter', () => {
+      clearInterval(autoPlayInterval);
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+      autoPlayInterval = setInterval(() => {
+        nextSlide();
+      }, {{ section.settings.change_slides_speed | times: 1000 }});
+    });
+  {% endif %}
+
+  // Suporte a touch/swipe em mobile
+  let startX = 0;
+  let startY = 0;
+  let isDown = false;
+
+  track.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isDown = true;
+  });
+
+  track.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+  });
+
+  track.addEventListener('touchend', (e) => {
+    if (!isDown) return;
+    isDown = false;
+    
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = startX - endX;
+    const diffY = startY - endY;
+    
+    // Verificar se é um swipe horizontal
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        nextSlide(); // Swipe left
+      } else {
+        previousSlide(); // Swipe right
+      }
+    }
+  });
+
+  // Suporte a teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      previousSlide();
+    } else if (e.key === 'ArrowRight') {
+      nextSlide();
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Carrossel de Banners",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "default": true,
+      "label": "Rotação automática"
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Velocidade de rotação",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagem",
+          "info": "Recomendado: 2000x600px para melhor qualidade"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Título do Banner",
+          "label": "Título"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "default": "Subtítulo ou descrição do banner",
+          "label": "Subtítulo"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Ver Ofertas",
+          "label": "Texto do botão"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link do botão"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carrossel de Banners",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Ração Premium para seu Pet",
+            "subheading": "Até 50% OFF em marcas selecionadas",
+            "button_label": "Ver Ofertas",
+            "button_link": "/collections/all"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Brinquedos e Acessórios",
+            "subheading": "Diversão garantida para cães e gatos",
+            "button_label": "Comprar Agora",
+            "button_link": "/collections/brinquedos"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Higiene e Cuidados",
+            "subheading": "Produtos para manter seu pet sempre limpo",
+            "button_label": "Descobrir",
+            "button_link": "/collections/higiene"
+          }
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}
