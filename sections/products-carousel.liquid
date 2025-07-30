@@ -1,3 +1,4 @@
+
 {%- style -%}
   .products-carousel {
     padding: 60px 0;
@@ -32,6 +33,7 @@
   .products-carousel__wrapper {
     position: relative;
     overflow: hidden;
+    margin: 0 22px;
   }
 
   .products-carousel__track {
@@ -49,7 +51,7 @@
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
@@ -192,9 +194,9 @@
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255,255,255,0.95);
-    border: 2px solid #eee;
-    width: 50px;
-    height: 50px;
+    border: none;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -202,26 +204,31 @@
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 3;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
 
   .products-carousel__nav:hover {
     background: white;
-    border-color: #ff6b35;
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .products-carousel__nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .products-carousel__nav--prev {
-    left: -25px;
+    left: -22px;
   }
 
   .products-carousel__nav--next {
-    right: -25px;
+    right: -22px;
   }
 
   .products-carousel__nav svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     fill: #333;
   }
 
@@ -267,6 +274,10 @@
 
     .products-carousel__container {
       padding: 0 16px;
+    }
+
+    .products-carousel__wrapper {
+      margin: 0;
     }
 
     .products-carousel__title {
@@ -476,7 +487,7 @@
 
   window.slideProducts = function(direction) {
     const containerWidth = track.parentElement.offsetWidth;
-    const slideStep = containerWidth;
+    const slideStep = Math.floor(containerWidth / slideWidth) * slideWidth;
 
     if (direction === 'next') {
       currentPosition = Math.min(currentPosition + slideStep, maxPosition);
@@ -494,8 +505,14 @@
     const prevBtn = document.querySelector('.products-carousel__nav--prev');
     const nextBtn = document.querySelector('.products-carousel__nav--next');
     
-    if (prevBtn) prevBtn.style.opacity = currentPosition <= 0 ? '0.5' : '1';
-    if (nextBtn) nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
+    if (prevBtn) {
+      prevBtn.disabled = currentPosition <= 0;
+      prevBtn.style.opacity = currentPosition <= 0 ? '0.3' : '1';
+    }
+    if (nextBtn) {
+      nextBtn.disabled = currentPosition >= maxPosition;
+      nextBtn.style.opacity = currentPosition >= maxPosition ? '0.3' : '1';
+    }
   }
 
   // Suporte a touch/swipe
