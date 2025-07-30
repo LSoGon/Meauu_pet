@@ -1,0 +1,311 @@
+/* VARIÁVEIS CSS PARA FACILITAR MANUTENÇÃO */
+:root {
+  /* Larguras baseadas em análise de mercado */
+  --container-max-width: 1320px;        /* Padrão moderno do mercado pet */
+  --container-padding: 24px;            /* Espaçamento lateral desktop */
+  --container-padding-tablet: 20px;     /* Espaçamento lateral tablet */
+  --container-padding-mobile: 16px;     /* Espaçamento lateral mobile */
+  
+  /* Breakpoints padrão mercado */
+  --breakpoint-xl: 1400px;              /* Extra large screens */
+  --breakpoint-lg: 1200px;              /* Large screens */
+  --breakpoint-md: 992px;               /* Medium screens (tablets) */
+  --breakpoint-sm: 768px;               /* Small screens (mobile landscape) */
+  --breakpoint-xs: 576px;               /* Extra small screens (mobile) */
+}
+
+/* ===== CONTAINER PRINCIPAL - PADRÃO MERCADO PET ===== */
+
+/* Container base seguindo padrões modernos */
+.page-width,
+.container,
+.main-content,
+body > main,
+#MainContent,
+.content-wrapper,
+.shopify-section-group-header-group,
+.section-wrapper {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header seguindo padrão dos grandes pet shops */
+.header-wrapper,
+.site-header,
+.header,
+.shopify-section-header {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  width: 100%;
+}
+
+/* Navegação principal */
+.site-nav,
+.main-menu,
+.navigation,
+.header__nav {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Footer padrão */
+.footer-wrapper,
+.site-footer,
+.footer,
+.shopify-section-group-footer-group {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Seções de conteúdo */
+.shopify-section:not([class*="banner"]):not([class*="hero"]):not([class*="slideshow"]) .section-wrapper,
+.product-grid-wrapper,
+.collection-wrapper,
+.page-content,
+.product-grid,
+.collection-grid {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* ===== EXCEÇÕES FULL-WIDTH (BANNERS E CARROSSÉIS) ===== */
+
+/* Banners devem ocupar toda a largura - padrão dos sites Pet */
+.banner,
+.hero-banner,
+.slideshow,
+.hero-section,
+.banner-section,
+.full-width-banner,
+.carousel-container,
+.slider-container,
+.promo-banner,
+[class*="banner"],
+[class*="hero"],
+[class*="slideshow"],
+[class*="carousel"] {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Conteúdo dentro dos banners pode ter container */
+.banner-content,
+.hero-content,
+.slideshow-content,
+.banner-text-wrapper,
+.carousel-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* ===== RESPONSIVIDADE PADRÃO MERCADO ===== */
+
+/* Extra Large Screens (1400px+) */
+@media screen and (min-width: 1400px) {
+  :root {
+    --container-padding: 32px;
+  }
+}
+
+/* Large Screens (1200px - 1399px) */
+@media screen and (max-width: 1399px) {
+  :root {
+    --container-padding: 24px;
+  }
+}
+
+/* Medium Screens - Tablets (992px - 1199px) */
+@media screen and (max-width: 1199px) {
+  :root {
+    --container-max-width: 100%;
+    --container-padding: var(--container-padding-tablet);
+  }
+}
+
+/* Small Screens - Mobile Landscape (768px - 991px) */
+@media screen and (max-width: 991px) {
+  :root {
+    --container-padding: var(--container-padding-mobile);
+  }
+}
+
+/* Extra Small Screens - Mobile Portrait (até 767px) */
+@media screen and (max-width: 767px) {
+  :root {
+    --container-padding: 12px;
+  }
+  
+  .banner-content,
+  .hero-content,
+  .slideshow-content,
+  .banner-text-wrapper,
+  .carousel-content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* ===== AJUSTES ESPECÍFICOS TEMA DAWN/SHOPIFY ===== */
+
+/* Classes específicas do Dawn */
+.color-background-1,
+.color-background-2,
+.section-template {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Páginas de produto */
+.product-form-wrapper,
+.product-info,
+.product-media-wrapper,
+.product__info-wrapper {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Carrinho drawer - sem limitação */
+.drawer,
+.cart-drawer,
+.cart-sidebar,
+.cart-notification-wrapper {
+  max-width: none !important;
+}
+
+/* ===== MELHORIAS ESPECÍFICAS PARA PET SHOPS ===== */
+
+/* Seções de categorias pet */
+.pet-categories,
+.product-categories,
+.featured-collections {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Newsletter e promoções (não banner) */
+.newsletter-section:not(.full-width),
+.promotional-section:not(.banner-promotional),
+.discount-section {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Cards de produto responsivos */
+.product-card,
+.product-item {
+  max-width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* ===== OTIMIZAÇÕES DE PERFORMANCE ===== */
+
+/* Prevenir overflow */
+body {
+  overflow-x: hidden;
+}
+
+/* Imagens responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== GRID RESPONSIVO PADRÃO MERCADO ===== */
+
+/* Grid de produtos estilo pet shops grandes */
+.product-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Responsivo para grid */
+@media screen and (max-width: 767px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* ===== UTILIDADES PARA DESENVOLVEDOR ===== */
+
+/* Classe helper para container customizado */
+.container-custom {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  width: 100%;
+}
+
+/* Classe helper para full-width */
+.full-width {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: calc(-1 * var(--container-padding)) !important;
+  margin-right: calc(-1 * var(--container-padding)) !important;
+}
+
+/* Classe helper para conteúdo centralizado dentro de full-width */
+.full-width .content-centered {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* ===== DEBUG HELPERS (REMOVER EM PRODUÇÃO) ===== */
+/*
+.container-debug {
+  outline: 2px solid red !important;
+}
+
+.container-debug::before {
+  content: "Container: " attr(class);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: red;
+  color: white;
+  padding: 2px 4px;
+  font-size: 10px;
+  z-index: 9999;
+}
+*/
