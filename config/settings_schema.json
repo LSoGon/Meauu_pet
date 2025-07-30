@@ -1,0 +1,612 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Pet Shop Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Pet Shop Developer",
+    "theme_documentation_url": "https://help.shopify.com",
+    "theme_support_url": "https://support.shopify.com"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "default": 150,
+        "unit": "px",
+        "label": "Largura do logo"
+      }
+    ]
+  },
+  {
+    "name": "Cores",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Geral"
+      },
+      {
+        "type": "color",
+        "id": "colors_solid_button_labels",
+        "default": "#ffffff",
+        "label": "Cor do texto em botões sólidos"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_1",
+        "default": "#FF6B6B",
+        "label": "Cor de destaque 1"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_2",
+        "default": "#4ECDC4",
+        "label": "Cor de destaque 2"
+      },
+      {
+        "type": "color",
+        "id": "colors_text",
+        "default": "#333333",
+        "label": "Cor do texto"
+      },
+      {
+        "type": "color",
+        "id": "colors_outline_button_labels",
+        "default": "#FF6B6B",
+        "label": "Cor do texto em botões com contorno"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_1",
+        "default": "#ffffff",
+        "label": "Cor de fundo 1"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_2",
+        "default": "#f8f9fa",
+        "label": "Cor de fundo 2"
+      }
+    ]
+  },
+  {
+    "name": "Tipografia",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cabeçalhos"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "default": "assistant_n4",
+        "label": "Fonte",
+        "info": "Selecione uma fonte do sistema ou do Google Fonts"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 100,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Tamanho da fonte",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Corpo do texto"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "default": "assistant_n4",
+        "label": "Fonte",
+        "info": "Selecione uma fonte do sistema ou do Google Fonts"
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "min": 100,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "label": "Tamanho da fonte",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 100,
+        "default": 1200,
+        "unit": "px",
+        "label": "Largura da página"
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Espaçamento entre seções",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Espaçamento da grade"
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_horizontal",
+        "min": 4,
+        "max": 40,
+        "step": 4,
+        "default": 8,
+        "unit": "px",
+        "label": "Horizontal"
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_vertical",
+        "min": 4,
+        "max": 40,
+        "step": 4,
+        "default": 8,
+        "unit": "px",
+        "label": "Vertical"
+      }
+    ]
+  },
+  {
+    "name": "Botões",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Bordas"
+      },
+      {
+        "type": "range",
+        "id": "buttons_border_thickness",
+        "min": 0,
+        "max": 12,
+        "step": 1,
+        "unit": "px",
+        "label": "Espessura",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "buttons_border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Opacidade",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "buttons_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Raio dos cantos",
+        "default": 4
+      },
+      {
+        "type": "header",
+        "content": "Sombra"
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Opacidade",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_horizontal_offset",
+        "min": -40,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Deslocamento horizontal",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_vertical_offset",
+        "min": -40,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Deslocamento vertical",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_blur",
+        "min": 0,
+        "max": 40,
+        "step": 5,
+        "unit": "px",
+        "label": "Desfoque",
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Cartões de produto",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_style",
+        "options": [
+          {
+            "value": "standard",
+            "label": "Padrão"
+          },
+          {
+            "value": "card",
+            "label": "Cartão"
+          }
+        ],
+        "default": "standard",
+        "label": "Estilo"
+      },
+      {
+        "type": "range",
+        "id": "card_image_padding",
+        "min": 0,
+        "max": 20,
+        "step": 2,
+        "unit": "px",
+        "label": "Espaçamento da imagem",
+        "default": 0
+      },
+      {
+        "type": "select",
+        "id": "card_text_alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Esquerda"
+          },
+          {
+            "value": "center",
+            "label": "Centro"
+          },
+          {
+            "value": "right",
+            "label": "Direita"
+          }
+        ],
+        "default": "left",
+        "label": "Alinhamento do texto"
+      },
+      {
+        "type": "select",
+        "id": "card_color_scheme",
+        "options": [
+          {
+            "value": "background-1",
+            "label": "Fundo 1"
+          },
+          {
+            "value": "background-2",
+            "label": "Fundo 2"
+          },
+          {
+            "value": "inverse",
+            "label": "Inverso"
+          },
+          {
+            "value": "accent-1",
+            "label": "Destaque 1"
+          },
+          {
+            "value": "accent-2",
+            "label": "Destaque 2"
+          }
+        ],
+        "default": "background-2",
+        "label": "Esquema de cores"
+      },
+      {
+        "type": "header",
+        "content": "Bordas"
+      },
+      {
+        "type": "range",
+        "id": "card_border_thickness",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Espessura",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "card_border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Opacidade",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "card_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Raio dos cantos",
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "Sombra"
+      },
+      {
+        "type": "range",
+        "id": "card_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Opacidade",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "card_shadow_horizontal_offset",
+        "min": -40,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Deslocamento horizontal",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "card_shadow_vertical_offset",
+        "min": -40,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Deslocamento vertical",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "card_shadow_blur",
+        "min": 0,
+        "max": 40,
+        "step": 5,
+        "unit": "px",
+        "label": "Desfoque",
+        "default": 5
+      }
+    ]
+  },
+  {
+    "name": "Badges",
+    "settings": [
+      {
+        "type": "select",
+        "id": "badge_position",
+        "options": [
+          {
+            "value": "bottom left",
+            "label": "Inferior esquerdo"
+          },
+          {
+            "value": "bottom right",
+            "label": "Inferior direito"
+          },
+          {
+            "value": "top left",
+            "label": "Superior esquerdo"
+          },
+          {
+            "value": "top right",
+            "label": "Superior direito"
+          }
+        ],
+        "default": "bottom left",
+        "label": "Posição"
+      },
+      {
+        "type": "range",
+        "id": "badge_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Raio dos cantos",
+        "default": 40
+      },
+      {
+        "type": "select",
+        "id": "sale_badge_color_scheme",
+        "options": [
+          {
+            "value": "accent-1",
+            "label": "Destaque 1"
+          },
+          {
+            "value": "accent-2",
+            "label": "Destaque 2"
+          },
+          {
+            "value": "background-2",
+            "label": "Fundo 2"
+          },
+          {
+            "value": "inverse",
+            "label": "Inverso"
+          }
+        ],
+        "default": "accent-1",
+        "label": "Esquema de cores - Promoção"
+      },
+      {
+        "type": "select",
+        "id": "sold_out_badge_color_scheme",
+        "options": [
+          {
+            "value": "background-1",
+            "label": "Fundo 1"
+          },
+          {
+            "value": "background-2",
+            "label": "Fundo 2"
+          },
+          {
+            "value": "inverse",
+            "label": "Inverso"
+          }
+        ],
+        "default": "inverse",
+        "label": "Esquema de cores - Esgotado"
+      }
+    ]
+  },
+  {
+    "name": "Busca",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "predictive_search_enabled",
+        "default": true,
+        "label": "Ativar busca preditiva"
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_show_vendor",
+        "default": false,
+        "label": "Mostrar fornecedor do produto",
+        "info": "Visível quando a busca preditiva está ativada."
+      },
+      {
+        "type": "checkbox",
+        "id": "predictive_search_show_price",
+        "default": false,
+        "label": "Mostrar preço do produto",
+        "info": "Visível quando a busca preditiva está ativada."
+      }
+    ]
+  },
+  {
+    "name": "Carrinho",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Gaveta"
+          },
+          {
+            "value": "page",
+            "label": "Página"
+          }
+        ],
+        "default": "drawer",
+        "label": "Tipo de carrinho"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "default": false,
+        "label": "Mostrar fornecedor"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_note",
+        "default": false,
+        "label": "Ativar observações do carrinho"
+      }
+    ]
+  },
+  {
+    "name": "Redes sociais",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Contas de redes sociais"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "placeholder": "https://facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "placeholder": "https://instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "placeholder": "https://youtube.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "placeholder": "https://twitter.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest",
+        "placeholder": "https://pinterest.com/shopify"
+      }
+    ]
+  },
+  {
+    "name": "Moeda",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "currency_code_enabled",
+        "default": true,
+        "label": "Mostrar códigos de moeda"
+      }
+    ]
+  },
+  {
+    "name": "Esquemas de cores",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Defina seus esquemas de cores personalizados para usar em todo o tema."
+      }
+    ]
+  }
+]

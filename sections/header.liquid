@@ -1,0 +1,135 @@
+{% comment %}
+  Header Personalizado para Pet Shop
+  Baseado no layout Petlove com 3 linhas
+{% endcomment %}
+
+<header class="header-wrapper">
+  <div class="header-container">
+    <!-- Linha 1: Logo, Busca e Ícones -->
+    <div class="header-top">
+      <div class="header-logo">
+        <a href="{{ routes.root_url }}" class="header-logo-link">
+          {% if section.settings.logo %}
+            <img src="{{ section.settings.logo | img_url: '200x' }}" 
+                 alt="{{ shop.name }}" 
+                 width="{{ section.settings.logo_width }}"
+                 loading="eager">
+          {% else %}
+            <span class="header-logo-text">{{ shop.name }}</span>
+          {% endif %}
+        </a>
+      </div>
+
+      <div class="header-search">
+        {% render 'search-form' %}
+      </div>
+
+      <div class="header-icons">
+        <!-- Meus Pedidos -->
+        <a href="{{ routes.account_orders_url }}" class="header-icon-link">
+          <div class="header-icon">
+            {% render 'icon-box' %}
+            <span class="header-icon-label">Meus Pedidos</span>
+          </div>
+        </a>
+
+        <!-- Sacola -->
+        <button class="header-icon-link cart-toggle" 
+                data-cart-count="{{ cart.item_count }}"
+                aria-label="Abrir carrinho">
+          <div class="header-icon">
+            {% render 'icon-bag' %}
+            <span class="cart-count-bubble{% if cart.item_count == 0 %} hidden{% endif %}">
+              {{ cart.item_count }}
+            </span>
+            <span class="header-icon-label">Sacola</span>
+          </div>
+        </button>
+
+        <!-- Login/Cadastro -->
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" 
+           class="header-icon-link">
+          <div class="header-icon">
+            {% render 'icon-user' %}
+            <span class="header-icon-label">
+              {% if customer %}
+                Minha Conta
+              {% else %}
+                Entrar | Cadastrar
+              {% endif %}
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Linha 2: Separador com Degradê -->
+    <div class="header-separator"></div>
+
+    <!-- Linha 3: Menu Principal -->
+    <nav class="header-nav" role="navigation">
+      <ul class="header-nav-list">
+        {% for link in section.settings.menu.links %}
+          <li class="header-nav-item">
+            <a href="{{ link.url }}" class="header-nav-link">
+              {{ link.title }}
+            </a>
+          </li>
+        {% endfor %}
+        <!-- Links fixos conforme solicitado -->
+        <li class="header-nav-item">
+          <a href="/collections/cachorro" class="header-nav-link">Cachorro</a>
+        </li>
+        <li class="header-nav-item">
+          <a href="/collections/gato" class="header-nav-link">Gato</a>
+        </li>
+        <li class="header-nav-item">
+          <a href="/collections/novidades" class="header-nav-link">Novidades</a>
+        </li>
+        <li class="header-nav-item">
+          <a href="/collections/promocoes" class="header-nav-link">Promoções</a>
+        </li>
+        <li class="header-nav-item">
+          <a href="/pages/favoritos" class="header-nav-link">Favoritos</a>
+        </li>
+        <li class="header-nav-item">
+          <button class="header-nav-link header-nav-more" aria-expanded="false">
+            Mais
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
+              <path d="M1 1l4 4 4-4"/>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Largura do logo",
+      "default": 150
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu principal",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

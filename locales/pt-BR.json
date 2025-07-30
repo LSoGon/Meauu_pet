@@ -1,0 +1,49 @@
+{
+  "general": {
+    "search": {
+      "search": "Buscar",
+      "placeholder": "O que seu pet precisa hoje?"
+    },
+    "cart": {
+      "title": "Sacola",
+      "empty": "Sua sacola está vazia",
+      "continue_shopping": "Continuar comprando",
+      "checkout": "Finalizar compra"
+    },
+    "account": {
+      "login": "Entrar",
+      "register": "Cadastrar",
+      "my_account": "Minha Conta",
+      "my_orders": "Meus Pedidos"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Adicionar à Sacola",
+      "sold_out": "Esgotado",
+      "on_sale": "Em promoção",
+      "quantity": "Quantidade",
+      "price": "Preço"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Coleções",
+      "all_products": "Todos os produtos"
+    },
+    "categories": {
+      "dog": "Cachorro",
+      "cat": "Gato",
+      "toys": "Brinquedos",
+      "collars": "Coleiras, guias e peitorais",
+      "hygiene": "Beleza, higiene e limpeza",
+      "beds": "Cama, almofada e cobertor",
+      "houses": "Casa e toca",
+      "feeding": "Recipientes para alimentação",
+      "transport": "Acessórios para transporte",
+      "safety": "Portão, grade e escada",
+      "clothing": "Roupas de verão e inverno",
+      "training": "Adestramento"
+    }
+  }
+}
