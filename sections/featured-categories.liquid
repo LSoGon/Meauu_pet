@@ -1,97 +1,324 @@
 {% comment %}
-  Seção de Categorias em Destaque
-  Exibe as categorias principais do pet shop
+  Seção de Categorias em Destaque - Carrossel
+  Exibe as categorias principais em um carrossel horizontal
 {% endcomment %}
 
-<section class="featured-categories">
+<section class="featured-categories" id="featured-categories-{{ section.id }}">
   <div class="container">
     <h2 class="section-title">{{ section.settings.title }}</h2>
     
-    <div class="categories-grid">
-      {% for block in section.blocks %}
-        <a href="{{ block.settings.link }}" class="category-card">
-          {% if block.settings.image %}
-            <div class="category-image">
-              <img src="{{ block.settings.image | img_url: '150x150' }}"
-                   alt="{{ block.settings.title }}"
-                   loading="lazy">
+    <div class="carousel-container">
+      <!-- Botão Anterior (Esquerda) -->
+      <button class="carousel-button carousel-button--prev" aria-label="Categoria anterior">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
+      <!-- Wrapper do Carrossel -->
+      <div class="carousel-wrapper">
+        <div class="categories-carousel">
+          {% for block in section.blocks %}
+            <div class="category-card">
+              <a href="{{ block.settings.link }}" class="category-card__link">
+                {% if block.settings.image %}
+                  <div class="category-card__image">
+                    <img src="{{ block.settings.image | img_url: '200x200' }}"
+                         alt="{{ block.settings.title }}"
+                         loading="lazy"
+                         width="200"
+                         height="200">
+                  </div>
+                {% endif %}
+                <h3 class="category-card__title">{{ block.settings.title }}</h3>
+              </a>
             </div>
-          {% endif %}
-          <h3 class="category-title">{{ block.settings.title }}</h3>
-        </a>
-      {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Botão Próximo (Direita) -->
+      <button class="carousel-button carousel-button--next" aria-label="Próxima categoria">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 </section>
 
 <style>
   .featured-categories {
-    padding: 60px 0;
-    background-color: #f8f9fa;
+    padding: 50px 0;
+    background-color: white;
+    overflow: hidden;
   }
 
   .container {
-    max-width: 1440px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
   }
 
   .section-title {
-    text-align: center;
-    font-size: 32px;
-    margin-bottom: 40px;
+    font-size: 28px;
+    margin: 0 0 5px 30px;
     color: #333;
   }
 
-  .categories-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+  /* Container principal do carrossel */
+  .carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 1420px; /* Largura fixa */
+    max-width: 100%; /* Responsivo */
+    margin: 0 auto; /* Centraliza */
   }
 
-  .category-card {
-    text-decoration: none;
-    color: #333;
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-
-  .category-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .category-image {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 15px;
+  /* Botões do Carrossel nas Extremidades */
+  .carousel-button {
+    position: absolute;
+    top: 35%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+  }
+
+  .carousel-button--prev {
+    left: -24px;
+  }
+
+  .carousel-button--next {
+    right: -24px;
+  }
+
+  .carousel-button:hover:not(:disabled) {
+    background-color: #fab41e;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(250, 180, 30, 0.4);
+  }
+
+  .carousel-button:hover:not(:disabled) svg {
+    color: white;
+  }
+
+  .carousel-button svg {
+    color: #666;
+    transition: color 0.3s ease;
+  }
+
+  .carousel-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .carousel-button:disabled:hover {
+    background: white;
+    transform: translateY(-50%);
+  }
+
+  /* Wrapper do Carrossel */
+  .carousel-wrapper {
     overflow: hidden;
-    background-color: white;
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-  }
-
-  .category-card:hover .category-image {
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-  }
-
-  .category-image img {
     width: 100%;
-    height: auto;
+    padding: 10px 0;
+  }
+
+  /* Container do Carrossel */
+  .categories-carousel {
+    display: flex;
+    gap: 35px;
+    transition: transform 0.3s ease;
+    padding: 10px 25px;
+  }
+
+  /* Cards de Categoria */
+  .category-card {
+    flex: 0 0 150px;
+    text-align: center;
+  }
+
+  .category-card__link {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.3s ease;
+  }
+
+  .category-card__link:hover {
+    transform: translateY(-5px);
+  }
+
+  .category-card__image {
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    border: none;
+    
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .category-card__link:hover .category-card__image {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .category-card__image img {
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
   }
 
-  .category-title {
-    font-size: 14px;
+  .category-card__title {
+    font-size: 16px;
     font-weight: 500;
-    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Responsivo */
+  @media (max-width: 768px) {
+    .carousel-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .carousel-button--prev {
+      left: -20px;
+    }
+
+    .carousel-button--next {
+      right: -20px;
+    }
+
+    .category-card {
+      flex: 0 0 140px;
+    }
+
+    .category-card__image {
+      height: 140px;
+      padding: 15px;
+    }
+
+    .category-card__title {
+      font-size: 14px;
+    }
+
+    .categories-carousel {
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .carousel-button--prev {
+      left: -15px;
+    }
+
+    .carousel-button--next {
+      right: -15px;
+    }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('#featured-categories-{{ section.id }} .categories-carousel');
+    const prevButton = document.querySelector('#featured-categories-{{ section.id }} .carousel-button--prev');
+    const nextButton = document.querySelector('#featured-categories-{{ section.id }} .carousel-button--next');
+    const wrapper = document.querySelector('#featured-categories-{{ section.id }} .carousel-wrapper');
+    
+    if (!carousel || !prevButton || !nextButton || !wrapper) return;
+    
+    let currentIndex = 0;
+    const gap = 15; // Espaço entre cards
+    
+    function getCardWidth() {
+      const firstCard = carousel.querySelector('.category-card');
+      return firstCard ? firstCard.offsetWidth + gap : 195;
+    }
+    
+    function getVisibleCards() {
+      const wrapperWidth = wrapper.offsetWidth;
+      const cardWidth = getCardWidth();
+      return Math.floor(wrapperWidth / cardWidth);
+    }
+    
+    function getTotalCards() {
+      return carousel.children.length;
+    }
+    
+    function getMaxIndex() {
+      const totalCards = getTotalCards();
+      const visibleCards = getVisibleCards();
+      return Math.max(0, totalCards - visibleCards);
+    }
+    
+    function updateCarousel() {
+      const cardWidth = getCardWidth();
+      const offset = currentIndex * cardWidth;
+      carousel.style.transform = `translateX(-${offset}px)`;
+      
+      // Atualizar visibilidade dos botões
+      if (currentIndex === 0) {
+        prevButton.style.display = 'none';
+      } else {
+        prevButton.style.display = 'flex';
+      }
+    
+      if (currentIndex >= getMaxIndex()) {
+        nextButton.style.display = 'none';
+      } else {
+        nextButton.style.display = 'flex';
+      }
+    }
+    
+    prevButton.addEventListener('click', function() {
+      if (currentIndex > 0) {
+        currentIndex = Math.max(0, currentIndex - 1);
+        updateCarousel();
+      }
+    });
+    
+    nextButton.addEventListener('click', function() {
+      const maxIndex = getMaxIndex();
+      if (currentIndex < maxIndex) {
+        currentIndex = Math.min(maxIndex, currentIndex + 1); // avançar 1 card
+        updateCarousel();
+      }
+    });
+    
+    // Atualizar no resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        const maxIndex = getMaxIndex();
+        if (currentIndex > maxIndex) {
+          currentIndex = maxIndex;
+        }
+        updateCarousel();
+      }, 250);
+    });
+    
+    // Inicializar
+    updateCarousel();
+  });
+</script>
 
 {% schema %}
 {
@@ -148,14 +375,14 @@
         {
           "type": "category",
           "settings": {
-            "title": "Higiene e Limpeza",
+            "title": "Higiene",
             "link": "/collections/beleza-higiene-limpeza"
           }
         },
         {
           "type": "category",
           "settings": {
-            "title": "Camas e Cobertores",
+            "title": "Camas",
             "link": "/collections/cama-almofada-cobertor"
           }
         },
