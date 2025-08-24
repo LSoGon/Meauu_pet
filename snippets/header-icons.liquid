@@ -5,7 +5,9 @@
   <div class="site-nav__icons">
     {% if shop.customer_accounts_enabled %}
       <a class="site-nav__link site-nav__link--icon medium-down--hide" href="{{ routes.account_url }}">
-        {% include 'icon-user' %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
         <span class="icon__fallback-text">
           {% if customer %}
             {{ 'layout.customer.account' | t }}
@@ -35,7 +37,9 @@
 
     <a href="{{ routes.cart_url }}" class="site-nav__link site-nav__link--icon js-drawer-open-cart js-no-transition" aria-controls="CartDrawer">
       <span class="cart-link">
-        {% include 'icon-cart' %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
         <span class="icon__fallback-text">{{ 'layout.cart.title' | t }}</span>
         <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
       </span>

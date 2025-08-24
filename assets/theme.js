@@ -5102,7 +5102,7 @@ lazySizesConfig.expFactor = 4;
   
   
 
-  // Medium breakpoint is also set in theme.scss.liquid and inline throughout some templates.
+  // Medium breakpoint is also set in theme.css and inline throughout some templates.
   // Do not change values unless you know what you're doing.
   theme.bp = {};
   theme.bp.smallUp = 590;

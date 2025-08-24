@@ -1,219 +1,1249 @@
 {%- assign animation_row = 1 -%}
-{%- assign drawer_position = 'right' -%}
-{% if logo_alignment == 'center' %}
-  {%- assign drawer_position = 'left' -%}
-{% endif %}
+{%- assign drawer_position = 'left' -%}
 
-<div id="NavDrawer" class="drawer drawer--{{ drawer_position }}">
+<div id="NavDrawer" class="drawer drawer--{{ drawer_position }} drawer--redesigned drawer--fullscreen">
   <div class="drawer__fixed-header">
     <div class="drawer__header appear-animation appear-delay-{{ animation_row }}">
-      <div class="drawer__title">
-        {% include 'currency-picker', picker_id: 'drawer', currency_class: 'currency-picker--drawer' %}
+      <!-- Novo cabeçalho redesigned -->
+      <div class="drawer__user-greeting">
+        <h3 class="drawer__greeting-title">Olá, Amigão</h3>
+        <p class="drawer__greeting-subtitle">Já possui conta ou gostaria de se cadastrar?</p>
       </div>
-      <div class="drawer__close">
-        <button type="button" class="drawer__close-button js-drawer-close">
-          {% include 'icon-close' %}
-          <span class="icon__fallback-text">{{ 'general.drawers.close_menu' | t }}</span>
-        </button>
+      <div class="drawer__login-button">
+        {% if customer %}
+          <a href="{{ routes.account_url }}" class="btn btn--login-custom">Conta</a>
+        {% else %}
+          <a href="{{ routes.account_login_url }}" class="btn btn--login-custom">Entrar</a>
+        {% endif %}
       </div>
     </div>
   </div>
+
   <div class="drawer__inner">
-
-    <ul class="mobile-nav" role="navigation" aria-label="Primary">
-      {% for link in main_menu.links %}
-        {%- assign animation_row = animation_row | plus: 1 -%}
-        {%- assign child_list_handle = link.url | handleize | append: forloop.index -%}
-        {%- assign has_dropdown = false -%}
-        {% if link.links != blank %}
-          {%- assign has_dropdown = true -%}
-        {% endif %}
-
-        <li class="mobile-nav__item{% unless template == 'index' %}{% if link.active %} mobile-nav__item--active{% endif %}{% endunless %} appear-animation appear-delay-{{ animation_row }}">
-          {% if has_dropdown %}
-            <div class="mobile-nav__has-sublist">
-              {% if link.url == '#' %}
-                <button type="button" class="mobile-nav__link--button collapsible-trigger collapsible--auto-height" aria-controls="Linklist-{{ child_list_handle }}">
-                  <span class="mobile-nav__faux-link">{{ link.title }}</span>
-                  <div class="mobile-nav__toggle">
-                    <span>
-                      {% include 'collapsible-icons' %}
-                    </span>
-                  </div>
-                </button>
-              {% else %}
-                <a href="{{ link.url }}" class="mobile-nav__link" id="Label-{{ child_list_handle }}">
-                  {{ link.title }}
-                </a>
-                <div class="mobile-nav__toggle">
-                  <button type="button" class="collapsible-trigger collapsible--auto-height" aria-controls="Linklist-{{ child_list_handle }}">
-                    {% include 'collapsible-icons' %}
-                  </button>
-                </div>
-              {% endif %}
-            </div>
-          {% else %}
-            <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
-          {% endif %}
-
-          {% if has_dropdown %}
-            <div id="Linklist-{{ child_list_handle }}" class="mobile-nav__sublist collapsible-content collapsible-content--all" aria-labelledby="Label-{{ child_list_handle }}">
-              <div class="collapsible-content__inner">
-                <ul class="mobile-nav__sublist">
-                  {% for childlink in link.links %}
-                    {%- assign has_sub_dropdown = false -%}
-                    {%- assign grand_child_list_handle = childlink.url | handleize | append: forloop.index -%}
-                    {% if childlink.links != blank %}
-                      {%- assign has_sub_dropdown = true -%}
-                    {% endif %}
-
-                    <li class="mobile-nav__item{% unless template == 'index' %}{% if childlink.active %} mobile-nav__item--active{% endif %}{% endunless %}">
-                      <div class="mobile-nav__child-item">
-                        {% if childlink.url == '#' and has_sub_dropdown %}
-                          <button type="button" class="mobile-nav__link--button mobile-nav__link--button-small collapsible-trigger" aria-controls="Sublinklist-{{ child_list_handle }}-{{ grand_child_list_handle }}">
-                            <span class="mobile-nav__faux-link">{{ childlink.title | escape }}</span>
-                            <div class="mobile-nav__toggle">
-                              <span>
-                                {% include 'collapsible-icons-alt' %}
-                              </span>
-                            </div>
-                          </button>
-                        {% else %}
-                          <a href="{{ childlink.url }}" class="mobile-nav__link" id="Sublabel-{{ grand_child_list_handle }}">
-                            {{ childlink.title | escape }}
-                          </a>
-                        {% endif %}
-                        {% if childlink.url != '#' and has_sub_dropdown %}
-                          <button type="button" class="collapsible-trigger" aria-controls="Sublinklist-{{ child_list_handle }}-{{ grand_child_list_handle }}">
-                            {% include 'collapsible-icons-alt' %}
-                          </button>
-                        {% endif %}
-                      </div>
-
-                      {% if has_sub_dropdown %}
-                        <div id="Sublinklist-{{ child_list_handle }}-{{ grand_child_list_handle }}" class="mobile-nav__sublist collapsible-content collapsible-content--all" aria-labelledby="Sublabel-{{ grand_child_list_handle }}">
-                          <div class="collapsible-content__inner">
-                            <ul class="mobile-nav__grandchildlist">
-                              {% for grandchildlink in childlink.links %}
-                                <li class="mobile-nav__item{% unless template == 'index' %}{% if grandchildlink.active %} mobile-nav__item--active{% endif %}{% endunless %}">
-                                  <a href="{{ grandchildlink.url }}" class="mobile-nav__link">
-                                    {{ grandchildlink.title }}
-                                  </a>
-                                </li>
-                              {% endfor %}
-                            </ul>
-                          </div>
-                        </div>
-                      {% endif %}
-                    </li>
-                  {% endfor %}
-                </ul>
+    <nav class="mobile-nav-redesigned" role="navigation" aria-label="Primary">
+     
+      <!-- Seção: Cachorro -->
+      {%- assign animation_row = animation_row | plus: 1 -%}
+      <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+       <a href="/pages/cachorros" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-dog' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Cachorros</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+        <ul class="mobile-nav__section-list">
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/hora-de-brincar" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Hora de brincar</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </div>
-            </div>
-          {% endif %}
-        </li>
-      {% endfor %}
-
-      {% if shop.customer_accounts_enabled %}
-        {%- assign animation_row = animation_row | plus: 1 -%}
-        {% if customer %}
-          <li class="mobile-nav__item{% unless template == 'index' %}{% if link.active %} mobile-nav__item--active{% endif %}{% endunless %} appear-animation appear-delay-{{ animation_row }}">
-            <a href="{{ routes.account_url }}" class="mobile-nav__link">{{ 'layout.customer.account' | t }}</a>
+            </a>
           </li>
-        {% else %}
-          <li class="mobile-nav__item{% unless template == 'index' %}{% if link.active %} mobile-nav__item--active{% endif %}{% endunless %} appear-animation appear-delay-{{ animation_row }}">
-            <a href="{{ routes.account_login_url }}" class="mobile-nav__link">{{ 'layout.customer.log_in' | t }}</a>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/passeio-com-estilo" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Passeio com estilo</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
           </li>
-        {% endif %}
-      {% endif %}
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/banho-e-latido" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Banho e latido</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/cantinho-do-soninho" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Cantinho do soninho</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/cao-genial" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Cão genial</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/hora-do-petisco" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Hora do petisco</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/late-com-estilo" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Late com estilo</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-      <li class="mobile-nav__spacer"></li>
+      <!-- Seção: Gato -->
+       <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+        <a href="/pages/gatos" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-cat' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Gatos</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+        <ul class="mobile-nav__section-list">
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/caca-ratinho" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Caça ratinho</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/hora-de-passear" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Hora de passear</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/lambe-e-brilha" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Lambe e brilha</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/zzz-meauu" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Zzz miau</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/miau-genial" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Miau genial</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/miau-guloseimas" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Miau guloseimas</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          <li class="mobile-nav__item-redesigned">
+            <a href="/pages/miau-com-estilo" class="mobile-nav__link-redesigned">
+              <span class="mobile-nav__text">Mia com estilo</span>
+              <div class="mobile-nav__chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-    </ul>
+      <!-- Seção: Novidades -->
+      {%- assign animation_row = animation_row | plus: 1 -%}
+      <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+        <a href="/pages/novidades" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-new' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Novidades</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+      </div>
 
-  <ul class="mobile-nav__social">
-    {% if settings.social_facebook_link != blank %}
+      <!-- Seção: Promoções -->
       {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_facebook_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Facebook' }}">
-          {% include 'icon-facebook' %}
-          <span class="icon__fallback-text">Facebook</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_twitter_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_twitter_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Twitter' }}">
-          {% include 'icon-twitter' %}
-          <span class="icon__fallback-text">Twitter</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_pinterest_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_pinterest_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Pinterest' }}">
-          {% include 'icon-pinterest' %}
-          <span class="icon__fallback-text">Pinterest</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_instagram_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_instagram_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Instagram' }}">
-          {% include 'icon-instagram' %}
-          <span class="icon__fallback-text">Instagram</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_snapchat_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_snapchat_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Snapchat' }}">
-          {% include 'icon-snapchat' %}
-          <span class="icon__fallback-text">Snapchap</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_tumblr_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_tumblr_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Tumblr' }}">
-          {% include 'icon-tumblr' %}
-          <span class="icon__fallback-text">Tumblr</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_linkedin_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_linkedin_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'LinkedIn' }}">
-          {% include 'icon-linkedin' %}
-          <span class="icon__fallback-text">LinkedIn</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_youtube_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_youtube_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'YouTube' }}">
-          {% include 'icon-youtube' %}
-          <span class="icon__fallback-text">YouTube</span>
-        </a>
-      </li>
-    {% endif %}
-    {% if settings.social_vimeo_link != blank %}
-      {%- assign animation_row = animation_row | plus: 1 -%}
-      <li class="appear-animation appear-delay-{{ animation_row }}">
-        <a target="_blank" href="{{ settings.social_vimeo_link }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Vimeo' }}">
-          {% include 'icon-vimeo' %}
-          <span class="icon__fallback-text">Vimeo</span>
-        </a>
-      </li>
-    {% endif %}
-  </ul>
+      <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+        <a href="/pages/promocoes" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-outlet' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Promoções</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+      </div>
 
+      <!-- Seção: Favoritos -->
+      {%- assign animation_row = animation_row | plus: 1 -%}
+      <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+        <a href="/pages/favoritos" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-favorites' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Favoritos</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+      </div>
+
+      <!-- Seção: Mais -->
+      {%- assign animation_row = animation_row | plus: 1 -%}
+      <div class="mobile-nav__section appear-animation appear-delay-{{ animation_row }}">
+        <a href="/pages/favoritos" class="mobile-nav__section-title-link">
+         <div class="mobile-nav__section-title-icon">
+           {% include 'icon-more' %}
+         </div>
+         <h3 class="mobile-nav__section-title">Mais</h3>
+         <div class="mobile-nav__section-title-chevron">
+           <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
+             <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>
+       </a>
+      </div>
+    </nav>
   </div>
+
+  <!-- Botão de fechar redesigned -->
+  <button type="button" class="drawer__close-button-redesigned js-drawer-close" aria-label="Fechar menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M18 6L6 18M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
 </div>
+
+<style>
+/* ========================================
+   VARIÁVEIS GLOBAIS CSS CUSTOM PROPERTIES
+   ======================================== */
+:root {
+  /* Variáveis do drawer */
+  --drawer-bg: var(--color-drawer-background, {{ settings.color_drawer_background | default: '#f8f8f8' }});
+  --drawer-text: var(--color-drawer-text, {{ settings.color_drawer_text | default: '#333' }});
+  --drawer-border: var(--color-drawer-border, {{ settings.color_borders | default: '#e0e0e0' }});
+  --drawer-button: var(--color-drawer-button, {{ settings.color_button | default: '#D8442A' }});
+  --drawer-header-bg: var(--color-header, {{ settings.color_header | default: 'white' }});
+  --drawer-body-bg: var(--color-body-bg, {{ settings.color_body_bg | default: '#f8f8f8' }});
+  
+  /* Dimensões dinâmicas (atualizadas via JS) */
+  --drawer-height: 100vh;
+  --drawer-header-height: 100px;
+  --drawer-bottom-offset: 0px;
+  
+  /* Z-index hierarchy */
+  --drawer-z-index: 9999;
+  --drawer-overlay-z-index: 9998;
+  --drawer-close-button-z-index: 10002;
+  
+  /* Transições */
+  --drawer-transition-duration: 0.35s;
+  --drawer-transition-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Animações */
+  --drawer-animation-delay-base: 0.05s;
+  --drawer-animation-duration: 0.4s;
+}
+
+/* ========================================
+   ESTILOS GLOBAIS - APLICAM A TODAS AS TELAS
+   ======================================== */
+
+/* Overlay para fechar o menu clicando fora */
+.drawer-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: var(--drawer-overlay-z-index) !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.drawer-overlay--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Drawer principal - estilos base */
+.drawer--redesigned.drawer--fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100vh !important;
+  background-color: var(--drawer-bg);
+  z-index: var(--drawer-z-index) !important;
+  transform: translateX(-100%) !important;
+  transition: transform var(--drawer-transition-duration) var(--drawer-transition-easing);
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  will-change: transform;
+  contain: layout style !important;
+}
+
+.drawer--redesigned.drawer--fullscreen * {
+  box-sizing: border-box !important;
+}
+
+/* Estados do drawer */
+.drawer--redesigned.drawer--fullscreen.drawer--is-open {
+  transform: translateX(0) !important;
+  display: block !important;
+}
+
+.drawer--right {
+  right: 0 !important;
+  left: auto !important;
+  transform: translateX(100%) !important;
+}
+
+.drawer--left {
+  left: 0 !important;
+  right: auto !important;
+  transform: translateX(-100%) !important;
+}
+
+/* Body state quando drawer está aberto */
+body.js-drawer-open {
+  overflow: hidden !important;
+  touch-action: none !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Header fixo do drawer */
+.drawer__fixed-header {
+  background-color: var(--drawer-header-bg) !important;
+  border-bottom: 1px solid var(--drawer-border) !important;
+  padding: 2px !important;
+  z-index: 1000 !important;
+}
+
+.drawer__header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+  box-sizing: border-box !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+}
+
+.drawer__user-greeting {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  margin: 0 !important; 
+  padding: 0 !important;
+}
+
+.drawer__greeting-title {
+  margin: 0 0 4px 0;
+  padding: 0 !important;
+}
+
+.drawer__greeting-subtitle {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.drawer__login-button {
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+}
+
+/* Botão de login personalizado */
+.btn--login-custom,
+.drawer__login-button a,
+.drawer__login-button .btn {
+  all: unset !important;
+  display: inline-block !important;
+  color: #D8432A !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s ease !important;
+  white-space: nowrap !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.btn--login-custom:hover,
+.btn--login-custom:focus,
+.btn--login-custom:active,
+.btn--login-custom:visited,
+.btn--login-custom:link,
+.drawer__login-button a:hover {
+  color: #D8432A !important;
+  background-color: var(--drawer-body-bg) !important;
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Área de conteúdo do drawer */
+.drawer__inner {
+  padding: 0 !important;
+  width: 100% !important;
+  height: calc(100vh - 100px) !important;
+  max-height: calc(100vh - 100px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box !important;
+}
+
+/* Navegação redesigned */
+.mobile-nav-redesigned {
+  padding: 0;
+}
+
+.mobile-nav__section {
+  margin-bottom: 2px;
+}
+
+.mobile-nav__section:first-child {
+  margin-top: 45px;
+}
+
+.mobile-nav__section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--drawer-text);
+  margin: 20px 0 1px 0;
+  padding: 0 10px;
+}
+
+.mobile-nav__section-list,
+.mobile-nav__individual-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav__individual-items {
+  padding-top: 0;
+  padding-bottom: 10px;
+}
+
+.mobile-nav__individual-items:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-nav__item-redesigned {
+  margin: 0;
+}
+
+.mobile-nav__item-redesigned:not(:last-child) {
+  border-bottom: none;
+}
+
+/* Links da navegação */
+.mobile-nav__link-redesigned {
+  display: flex;
+  align-items: center;
+  padding: 1px 10px;
+  background-color: var(--drawer-header-bg);
+  color: var(--drawer-text);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  min-height: 36px;
+  box-sizing: border-box;
+}
+
+.mobile-nav__link-redesigned:active {
+  background-color: #fff0ee;
+  border-radius: 30px;
+}
+
+/* Estilos para títulos de seção com link */
+.mobile-nav__section-title-link {
+  display: flex;
+  align-items: center;
+  padding: 20px 0 5px 10px;
+  text-decoration: none;
+  color: var(--drawer-text);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.mobile-nav__section-title-link:active {
+  background-color: #fff0ee;
+  border-radius: 30px;
+}
+
+.mobile-nav__section-title-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--drawer-button);
+}
+
+.mobile-nav__section-title-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.mobile-nav__section-title-link .mobile-nav__section-title {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: inherit;
+}
+
+.mobile-nav__section-title-chevron {
+  width: 20px;
+  height: 20px;
+  color: #333;
+  flex-shrink: 0;
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav__section-title-link + .mobile-nav__section-list {
+  margin-top: 0;
+}
+
+.mobile-nav__text {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 400;
+  color: #D8442A !important;
+  line-height: 1.4;
+  margin: 0 20px 0 38px;
+}
+
+.mobile-nav__chevron {
+  width: 16px;
+  height: 16px;
+  color: #D8442A !important;
+  flex-shrink: 0;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botão flutuante de fechar */
+.drawer__close-button-redesigned {
+  position: fixed;
+  bottom: calc(var(--drawer-bottom-offset, 0px) + env(safe-area-inset-bottom, 0px) + 20px) !important;
+  right: 20px !important;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: #D8442A;
+  box-shadow: 0 12px 30px rgba(46, 12, 71, 0.18), 0 4px 8px rgba(0,0,0,0.08);
+  transform-origin: center;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  z-index: var(--drawer-close-button-z-index) !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drawer__close-button-redesigned svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.drawer__close-button-redesigned:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 18px 38px rgba(46, 12, 71, 0.22);
+}
+
+.drawer__close-button-redesigned:active {
+  transform: translateY(0) scale(.98);
+}
+
+.drawer__close-button-redesigned:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(123,67,151,0.14);
+}
+
+/* Animações de entrada */
+.appear-animation {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideInFade var(--drawer-animation-duration) ease-out forwards;
+}
+
+.appear-animation.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity var(--drawer-animation-duration) ease-out, transform var(--drawer-animation-duration) ease-out;
+}
+
+/* Geração dinâmica de delays para animação */
+@for $i from 1 through 20 {
+  .appear-delay-#{$i} {
+    animation-delay: #{$i * var(--drawer-animation-delay-base)};
+  }
+}
+
+@keyframes slideInFade {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   DESKTOP - TELAS ACIMA DE 1024px
+   ======================================== */
+@media (min-width: 1025px) {
+  /* Ajustes específicos para desktop se necessário */
+  .drawer__close-button-redesigned {
+    right: 40px !important;
+  }
+}
+
+/* ========================================
+   TABLET - TELAS DE 590px ATÉ 1024px
+   ======================================== */
+@media (min-width: 590px) and (max-width: 1024px) {
+  .drawer__close-button-redesigned {
+    right: 40px !important;
+  }
+}
+
+/* ========================================
+   MOBILE E TABLET - TELAS ATÉ 1024px
+   ======================================== */
+@media (max-width: 1024px) {
+  .drawer {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    z-index: var(--drawer-z-index) !important;
+    -webkit-overflow-scrolling: touch;
+    transition: transform var(--drawer-transition-duration) var(--drawer-transition-easing);
+    will-change: transform;
+    box-sizing: border-box !important;
+  }
+
+  .drawer__inner {
+    height: 100% !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box !important;
+  }
+
+  .drawer.drawer--is-open {
+    transform: translateX(0) !important;
+    display: block !important;
+  }
+}
+
+/* ========================================
+   MOBILE - TELAS ATÉ 480px
+   ======================================== */
+@media (max-width: 480px) {
+  .mobile-nav__link-redesigned {
+    padding: 14px 16px;
+    min-height: 52px;
+  }
+
+  .drawer__close-button-redesigned {
+    width: 52px;
+    height: 52px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* ========================================
+   MOBILE PEQUENO - TELAS ATÉ 420px
+   ======================================== */
+@media (max-width: 420px) {
+  .drawer--redesigned.drawer--fullscreen .drawer__header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .drawer--redesigned.drawer--fullscreen .drawer__user-greeting {
+    flex: 1 !important;
+    align-items: flex-start !important;
+    max-width: calc(100% - 80px) !important;
+  }
+
+  .drawer--redesigned.drawer--fullscreen .drawer__login-button {
+    flex-shrink: 0 !important;
+    align-self: flex-start !important;
+    margin-left: 0 !important;
+    min-width: 60px !important;
+  }
+
+  .drawer__close-button-redesigned {
+    width: 56px;
+    height: 56px;
+    bottom: calc(var(--drawer-bottom-offset, 0px) + env(safe-area-inset-bottom, 0px) + 14px) !important;
+    right: 16px !important;
+  }
+}
+
+/* ========================================
+   ACESSIBILIDADE E PREFERÊNCIAS DO USUÁRIO
+   ======================================== */
+
+/* Para usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .drawer--fullscreen {
+    transition: transform 0.2s ease;
+  }
+  
+  .appear-animation {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+  
+  .appear-animation.animate-in {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* Para usuários que não preferem movimento reduzido */
+@media (prefers-reduced-motion: no-preference) {
+  .drawer--fullscreen {
+    transition: transform var(--drawer-transition-duration) var(--drawer-transition-easing);
+  }
+}
+
+/* Drawer posicionado à direita */
+.drawer--right .drawer__close-button-redesigned {
+  right: auto !important;
+  left: 20px !important;
+}
+
+/* ========================================
+   GERAÇÃO DINÂMICA DE DELAYS DE ANIMAÇÃO
+   ======================================== */
+.appear-delay-1 { animation-delay: 0.05s; }
+.appear-delay-2 { animation-delay: 0.10s; }
+.appear-delay-3 { animation-delay: 0.15s; }
+.appear-delay-4 { animation-delay: 0.20s; }
+.appear-delay-5 { animation-delay: 0.25s; }
+.appear-delay-6 { animation-delay: 0.30s; }
+.appear-delay-7 { animation-delay: 0.35s; }
+.appear-delay-8 { animation-delay: 0.40s; }
+.appear-delay-9 { animation-delay: 0.45s; }
+.appear-delay-10 { animation-delay: 0.50s; }
+.appear-delay-11 { animation-delay: 0.55s; }
+.appear-delay-12 { animation-delay: 0.60s; }
+.appear-delay-13 { animation-delay: 0.65s; }
+.appear-delay-14 { animation-delay: 0.70s; }
+.appear-delay-15 { animation-delay: 0.75s; }
+.appear-delay-16 { animation-delay: 0.80s; }
+.appear-delay-17 { animation-delay: 0.85s; }
+.appear-delay-18 { animation-delay: 0.90s; }
+.appear-delay-19 { animation-delay: 0.95s; }
+.appear-delay-20 { animation-delay: 1.00s; }
+
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // ============================================
+  // CONFIGURAÇÕES E CONSTANTES
+  // ============================================
+  const DRAWER_CONFIG = {
+    DRAWER_ID: 'NavDrawer',
+    OVERLAY_CLASS: 'drawer-overlay',
+    OPEN_CLASS: 'drawer--is-open',
+    BODY_OPEN_CLASS: 'js-drawer-open',
+    OVERLAY_ACTIVE_CLASS: 'drawer-overlay--active',
+    ANIMATE_CLASS: 'animate-in',
+    ANIMATION_DELAY: 50 // ms entre animações
+  };
+
+  // ============================================
+  // ELEMENTOS DOM
+  // ============================================
+  const elements = {
+    drawer: document.getElementById(DRAWER_CONFIG.DRAWER_ID),
+    drawerTriggers: document.querySelectorAll('[data-drawer-trigger]'),
+    drawerCloseButtons: document.querySelectorAll('.js-drawer-close'),
+    body: document.body,
+    overlay: null
+  };
+
+  // ============================================
+  // VERIFICAÇÃO DE COMPATIBILIDADE COM TEMA
+  // ============================================
+  function checkThemeCompatibility() {
+    if (window.theme && theme.NavDrawer) {
+      console.log('Usando sistema de drawer existente do tema');
+      return true;
+    }
+    return false;
+  }
+
+  // ============================================
+  // CRIAÇÃO DE OVERLAY
+  // ============================================
+  function createOverlay() {
+    let overlay = document.querySelector(`.${DRAWER_CONFIG.OVERLAY_CLASS}`);
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = DRAWER_CONFIG.OVERLAY_CLASS;
+      overlay.setAttribute('data-drawer-close', '');
+      elements.body.appendChild(overlay);
+    }
+    elements.overlay = overlay;
+    return overlay;
+  }
+
+  // ============================================
+  // GERENCIAMENTO DE ALTURAS DINÂMICAS
+  // ============================================
+  function getViewportHeight() {
+    if (window.visualViewport && window.visualViewport.height) {
+      return window.visualViewport.height;
+    }
+    return window.innerHeight;
+  }
+
+  function updateDrawerDimensions() {
+    const viewportHeight = Math.round(getViewportHeight());
+    const innerHeight = Math.round(window.innerHeight || viewportHeight);
+    const bottomChrome = Math.max(0, innerHeight - viewportHeight);
+    
+    const header = elements.drawer ? elements.drawer.querySelector('.drawer__fixed-header') : null;
+    const headerHeight = header ? Math.round(header.getBoundingClientRect().height || header.offsetHeight || 0) : 100;
+
+    // Atualizar variáveis CSS
+    const rootElement = document.documentElement;
+    rootElement.style.setProperty('--drawer-height', `${viewportHeight}px`);
+    rootElement.style.setProperty('--drawer-header-height', `${headerHeight}px`);
+    rootElement.style.setProperty('--drawer-bottom-offset', `${bottomChrome}px`);
+    
+    if (elements.drawer) {
+      elements.drawer.style.setProperty('--drawer-height', `${viewportHeight}px`);
+      elements.drawer.style.setProperty('--drawer-header-height', `${headerHeight}px`);
+      elements.drawer.style.setProperty('--drawer-bottom-offset', `${bottomChrome}px`);
+    }
+  }
+
+  // ============================================
+  // CRIAÇÃO DO BOTÃO DE FECHAR
+  // ============================================
+  function ensureCloseButton() {
+    if (!elements.drawer) return;
+    
+    let closeBtn = elements.drawer.querySelector('.drawer__close-button-redesigned');
+    if (!closeBtn) {
+      closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'drawer__close-button-redesigned js-drawer-close';
+      closeBtn.setAttribute('aria-label', 'Fechar menu');
+      closeBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 6L6 18M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      elements.drawer.appendChild(closeBtn);
+    }
+
+    // Event listeners para o botão
+    closeBtn.addEventListener('click', handleCloseDrawer);
+    closeBtn.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        handleCloseDrawer(e);
+      }
+    });
+
+    return closeBtn;
+  }
+
+  // ============================================
+  // FUNÇÕES DE CONTROLE DO DRAWER
+  // ============================================
+  function openDrawer() {
+    if (!elements.drawer || !elements.overlay) return;
+
+    // Atualizar dimensões antes de abrir
+    updateDrawerDimensions();
+    elements.drawer.getBoundingClientRect(); // Force reflow
+
+    // Aplicar classes de abertura
+    elements.drawer.classList.add(DRAWER_CONFIG.OPEN_CLASS);
+    elements.overlay.classList.add(DRAWER_CONFIG.OVERLAY_ACTIVE_CLASS);
+    elements.body.classList.add(DRAWER_CONFIG.BODY_OPEN_CLASS);
+    
+    // Animar itens
+    const items = elements.drawer.querySelectorAll('.appear-animation');
+    items.forEach((item, index) => {
+      item.style.animationDelay = `${index * DRAWER_CONFIG.ANIMATION_DELAY}ms`;
+      item.classList.add(DRAWER_CONFIG.ANIMATE_CLASS);
+    });
+
+    // Disparar evento customizado
+    const event = new CustomEvent('drawer:open', {
+      detail: { drawer: elements.drawer }
+    });
+    document.dispatchEvent(event);
+  }
+
+  function closeDrawer() {
+    if (!elements.drawer || !elements.overlay) return;
+
+    // Remover classes de abertura
+    elements.drawer.classList.remove(DRAWER_CONFIG.OPEN_CLASS);
+    elements.overlay.classList.remove(DRAWER_CONFIG.OVERLAY_ACTIVE_CLASS);
+    elements.body.classList.remove(DRAWER_CONFIG.BODY_OPEN_CLASS);
+    
+    // Remover animações
+    const items = elements.drawer.querySelectorAll('.appear-animation');
+    items.forEach(item => {
+      item.classList.remove(DRAWER_CONFIG.ANIMATE_CLASS);
+    });
+
+    // Retornar foco para o trigger
+    const trigger = document.querySelector('[data-drawer-trigger].is-active') || 
+                   document.querySelector('[data-drawer-trigger]');
+    if (trigger) trigger.focus();
+
+    // Disparar evento customizado
+    const event = new CustomEvent('drawer:close', {
+      detail: { drawer: elements.drawer }
+    });
+    document.dispatchEvent(event);
+  }
+
+  // ============================================
+  // HANDLERS DE EVENTOS
+  // ============================================
+  function handleOpenDrawer(e) {
+    e.preventDefault();
+    openDrawer();
+  }
+
+  function handleCloseDrawer(e) {
+    if (e) e.preventDefault();
+    closeDrawer();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === elements.overlay) {
+      closeDrawer();
+    }
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape' && elements.drawer.classList.contains(DRAWER_CONFIG.OPEN_CLASS)) {
+      closeDrawer();
+    }
+  }
+
+  // ============================================
+  // PREVENÇÃO DE SCROLL NO DRAWER
+  // ============================================
+  function handleDrawerTouchMove(e) {
+    const scrollableElement = e.target.closest('.drawer__inner');
+    if (!scrollableElement) {
+      e.preventDefault();
+    }
+  }
+
+  // ============================================
+  // APLICAÇÃO DE CORES DO TEMA
+  // ============================================
+  function applyThemeColors() {
+    if (!window.theme || !theme.settings || !elements.drawer) return;
+
+    const themeColors = {
+      '--drawer-bg': theme.settings.color_drawer_background,
+      '--drawer-text': theme.settings.color_drawer_text,
+      '--drawer-border': theme.settings.color_drawer_border,
+      '--drawer-button': theme.settings.color_button
+    };
+
+    Object.entries(themeColors).forEach(([property, value]) => {
+      if (value) {
+        elements.drawer.style.setProperty(property, value);
+      }
+    });
+  }
+
+  // ============================================
+  // SETUP DE EVENT LISTENERS
+  // ============================================
+  function setupEventListeners() {
+    // Listeners para abrir drawer
+    elements.drawerTriggers.forEach(trigger => {
+      trigger.addEventListener('click', handleOpenDrawer);
+    });
+
+    // Listeners para fechar drawer
+    elements.drawerCloseButtons.forEach(button => {
+      button.addEventListener('click', handleCloseDrawer);
+    });
+
+    // Listener para overlay
+    if (elements.overlay) {
+      elements.overlay.addEventListener('click', handleOverlayClick);
+    }
+
+    // Listener para tecla ESC
+    document.addEventListener('keydown', handleKeydown);
+
+    // Listener para prevenção de scroll
+    if (elements.drawer) {
+      elements.drawer.addEventListener('touchmove', handleDrawerTouchMove);
+    }
+
+    // Listeners para redimensionamento
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateDrawerDimensions, { passive: true });
+      window.visualViewport.addEventListener('scroll', updateDrawerDimensions, { passive: true });
+    }
+    
+    window.addEventListener('resize', updateDrawerDimensions, { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateDrawerDimensions, 150);
+    }, { passive: true });
+
+    // Listener para integração com outros drawers do tema
+    document.addEventListener('drawer:open', function(e) {
+      if (e.detail && e.detail.drawer && e.detail.drawer.id !== DRAWER_CONFIG.DRAWER_ID) {
+        closeDrawer();
+      }
+    });
+  }
+
+  // ============================================
+  // INTEGRAÇÃO COM ANALYTICS
+  // ============================================
+  function setupAnalytics() {
+    document.addEventListener('drawer:open', function(e) {
+      if (window.theme && theme.analytics && typeof theme.analytics.track === 'function') {
+        theme.analytics.track('Mobile Menu Opened', {
+          drawer_id: e.detail.drawer ? e.detail.drawer.id : DRAWER_CONFIG.DRAWER_ID
+        });
+      }
+    });
+
+    document.addEventListener('drawer:close', function(e) {
+      if (window.theme && theme.analytics && typeof theme.analytics.track === 'function') {
+        theme.analytics.track('Mobile Menu Closed', {
+          drawer_id: e.detail.drawer ? e.detail.drawer.id : DRAWER_CONFIG.DRAWER_ID
+        });
+      }
+    });
+  }
+
+  // ============================================
+  // INICIALIZAÇÃO PRINCIPAL
+  // ============================================
+  function initializeDrawer() {
+    // Verificar compatibilidade com tema existente
+    if (checkThemeCompatibility()) {
+      return; // Usar sistema existente do tema
+    }
+
+    // Verificar se elementos essenciais existem
+    if (!elements.drawer) {
+      console.warn('Drawer element not found');
+      return;
+    }
+
+    // Configurar componentes
+    createOverlay();
+    ensureCloseButton();
+    setupEventListeners();
+    applyThemeColors();
+    setupAnalytics();
+    
+    // Calcular dimensões iniciais
+    updateDrawerDimensions();
+
+    // Expor funções para debug
+    window._drawer_controls = {
+      open: openDrawer,
+      close: closeDrawer,
+      updateDimensions: updateDrawerDimensions,
+      elements: elements
+    };
+
+    console.log('Drawer inicializado com sucesso');
+  }
+
+  // ============================================
+  // INJEÇÃO DE CSS ADICIONAL
+  // ============================================
+  function injectAdditionalCSS() {
+    const additionalCSS = `
+      /* CSS adicional para compatibilidade com tema Shopify */
+      .drawer--fullscreen {
+        will-change: transform;
+      }
+      
+      .drawer--fullscreen.drawer--is-open {
+        position: fixed !important;
+        -webkit-overflow-scrolling: touch;
+        transform: translateX(0) !important;
+      }
+      
+      .drawer--redesigned {
+        box-sizing: border-box !important;
+        contain: layout style !important;
+      }
+      
+      .drawer--redesigned * {
+        box-sizing: border-box !important;
+      }
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = additionalCSS;
+    style.setAttribute('data-drawer-styles', 'true');
+    document.head.appendChild(style);
+  }
+
+  // ============================================
+  // EXECUÇÃO
+  // ============================================
+  
+  // Verificar se já existe sistema de drawer
+  function initializeDrawerSystem() {
+    if (window.theme && (theme.Drawers || theme.NavDrawer)) {
+      console.log('Sistema de drawer do tema detectado');
+      
+      const existingDrawer = theme.Drawers || theme.NavDrawer;
+      if (existingDrawer && typeof existingDrawer.init === 'function') {
+        existingDrawer.init();
+      }
+    }
+    
+    injectAdditionalCSS();
+  }
+
+  // Inicializar sistema
+  initializeDrawerSystem();
+  
+  // Inicializar nosso drawer
+  initializeDrawer();
+});
+
+// ============================================
+// INICIALIZAÇÃO DE CSS QUANDO DOM ESTIVER PRONTO
+// ============================================
+function injectDrawerCSS() {
+  // CSS já está inline no <style>, nada a fazer aqui
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', injectDrawerCSS);
+} else {
+  injectDrawerCSS();
+}
+</script>

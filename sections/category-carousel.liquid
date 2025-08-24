@@ -13,7 +13,7 @@
     </h2>
   </div>
 
-  <div class="category-container">
+  <div class="category-container" style="padding-left: 20px;">
     <div class="category-track">
       {% for block in section.blocks %}
         <div class="category-item" {{ block.shopify_attributes }}>
@@ -54,15 +54,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-  padding: 20px;
+  margin-bottom: 20px;
+  padding: 20px 0 0 20px;
 }
 
 .section-header__title {
   font-size: clamp(18px, 2.5vw, 24px);
-  font-weight: 300;
+  font-weight: 600;
   margin: 0;
-  color: #333;
+  /* CORRIGIDO: Usando variável do tema ao invés de valor fixo */
+  color: {{ settings.color_body_text }};
 }
 
 /* Container principal - similar ao mobile-menu-container do header */
@@ -77,7 +78,7 @@
 /* Track dos itens - similar ao site-nav do header */
 .category-track {
   display: flex;
-  gap: clamp(20px, 3vw, 30px);
+  gap: clamp(11px, 2.2vw, 20px);
   white-space: nowrap;
   justify-content: flex-start;
   align-items: flex-start;
@@ -104,9 +105,10 @@
   transform: translateY(-5px);
 }
 
+/* Container da imagem - CORRIGIDO */
 .category-card__image-wrapper {
-  width: clamp(70px, 11vw, 150px);
-  height: clamp(70px, 11vw, 150px);
+  width: clamp(77px, 11vw, 165px);
+  height: clamp(77px, 11vw, 165px);
   margin: 0 auto 12px;
   position: relative;
   display: flex;
@@ -115,7 +117,7 @@
   flex-shrink: 0;
 }
 
-/* Círculo de fundo */
+/* Círculo de fundo - MANTIDO */
 .category-card__circle {
   position: absolute;
   top: 0;
@@ -123,24 +125,32 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: #f5f5f5;
+  border: 1px solid #EFEFEF;
+  background: {{ settings.color_small_image_bg | default: '#f5f5f5' }};
   z-index: 1;
 }
 
-/* Imagem sobreposta mantendo proporções originais */
+/* Imagem - CORRIGIDO para centralização perfeita */
 .category-card__image {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80%; /* Reduzido para dar mais espaço dentro do círculo */
+  max-height: 80%; /* Reduzido para dar mais espaço dentro do círculo */
   width: auto;
   height: auto;
   object-fit: contain;
   border-radius: 0;
 }
 
+/* Placeholder - CORRIGIDO */
 .category-card__placeholder {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   width: 80%;
   height: 80%;
@@ -151,24 +161,34 @@
   background: #f0f0f0;
 }
 
+/* Título - CORRIGIDO para centralização com o círculo */
 .category-card__title {
-  font-weight: 200;
-  color: #333;
+  font-weight: 400;
+  color: {{ settings.color_body_text }};
   margin: 0 0 4px;
-  font-size: clamp(13px, 2.2vw, 16px);
+  font-size: clamp(14px, 2.5vw, 18px);
   line-height: 1.3;
   word-wrap: break-word;
   padding-top: 7px;
-  max-width: clamp(70px, 11vw, 150px);
+  /* MUDANÇA PRINCIPAL: centralizar com a largura do círculo */
+  width: clamp(77px, 11vw, 165px);
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Subtítulo - CORRIGIDO */
 .category-card__subtitle {
-  color: #666;
+  color: {{ settings.color_body_text | color_modify: 'alpha', 0.7 }};
   margin: 0;
-  font-size: clamp(9px, 1.4vw, 13px);
+  font-size: clamp(11px, 1.4vw, 15px);
   line-height: 1.2;
   word-wrap: break-word;
-  max-width: clamp(70px, 11vw, 150px);
+  /* MUDANÇA PRINCIPAL: centralizar com a largura do círculo */
+  width: clamp(77px, 11vw, 165px);
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Scroll snap para melhor UX */
@@ -183,7 +203,8 @@
 /* Hover effects */
 .category-card__title:hover,
 .category-card__subtitle:hover {
-  color: #efa31d;
+  /* CORRIGIDO: Usando cor do botão do tema para hover */
+  color: {{ settings.color_button }};
   transition: color 0.3s ease;
 }
 
@@ -194,30 +215,47 @@
 
 /* Responsividade */
 @media screen and (max-width: 480px) {
-  .category-container {
-    padding: 7px 0; /* aumenta ambos os lados */
+  /* Remove o margin-left do primeiro card */
+  .category-track .category-card:first-child {
+    margin-left: 10px;
+    /* Forçar centralização do conteúdo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Aplicar em todos os cards para consistência */
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .section-header {
+    margin-bottom: 10px; /* Menor no mobile para economizar espaço */
   }
   
   .category-track {
-    gap: 30px;
+    gap: 10px;
   }
   
   .category-card__image-wrapper {
-    width: clamp(60px, 15vw, 80px);
-    height: clamp(60px, 15vw, 80px);
-    margin-bottom: 8px;
+    width: clamp(70px, 15vw, 90px);
+    height: clamp(70px, 15vw, 90px);
+    margin-bottom: 10px;
   }
   
   .category-card__title {
-    font-size: clamp(12px, 2.9vw, 15px);
+    font-size: clamp(13px, 3vw, 16px);
     line-height: 1.2;
     min-height: 2.4em;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    padding-top: 4px;
-    max-width: clamp(60px, 15vw, 80px);
+    padding-top: 5px;
+    max-width: clamp(70px, 15vw, 90px);
   }
   
   .category-card__subtitle {
@@ -228,54 +266,71 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-width: clamp(60px, 15vw, 80px);
+    max-width: clamp(70px, 15vw, 90px);
   }
 }
 
 @media screen and (min-width: 481px) and (max-width: 768px) {
-  .category-container {
-    padding: 7px 20px;
+  /* Remove o margin-left do primeiro card */
+  .category-track .category-card:first-child {
+    margin-left: 10px;
+    /* Forçar centralização do conteúdo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .section-header {
+    margin-bottom: 15px; /* Moderado no tablet */
+  }
+
+  /* Aplicar em todos os cards para consistência */
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
   
   .category-track {
-    gap: 12px;
+    gap: 15px;
   }
   
   .category-card__image-wrapper {
-    width: clamp(80px, 12vw, 120px);
-    height: clamp(80px, 12vw, 120px);
-    margin-bottom: 10px;
+    width: clamp(85px, 13vw, 130px);
+    height: clamp(85px, 13vw, 130px);
+    margin-bottom: 11px;
   }
   
   .category-card__title {
-    font-size: clamp(12px, 2vw, 14px);
+    font-size: clamp(13px, 2.1vw, 15px);
     line-height: 1.2;
     min-height: 2.4em;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    padding-top: 6px;
-    max-width: clamp(80px, 12vw, 120px);
+    padding-top: 7px;
+    max-width: clamp(85px, 13vw, 130px);
   }
   
   .category-card__subtitle {
-    font-size: clamp(10px, 1.8vw, 12px);
+    font-size: clamp(11px, 1.9vw, 13px);
     line-height: 1.2;
     min-height: 1.2em;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-width: clamp(80px, 12vw, 120px);
+    max-width: clamp(85px, 13vw, 130px);
   }
 }
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   .category-container {
     padding: 7px 30px;
-    align-items: center
-
+    align-items: center;
   }
 }
 

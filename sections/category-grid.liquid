@@ -1,0 +1,503 @@
+<!-- sections/category-grid-img.liquid -->
+{% comment %}
+  Seção de Categorias em Grid estilo img
+  Layout: 2 colunas x 3 linhas = 6 categorias
+  Visível apenas em mobile e tablet
+{% endcomment %}
+
+<div class="category-grid-img-section {% if section.settings.section_width == 'full-width' %}full-width{% else %}page-width{% endif %}" 
+     data-section-id="{{ section.id }}" 
+     data-section-type="category-grid-img"
+     style="--item-height-mobile: {{ section.settings.item_height_mobile }}px;
+            --item-height-tablet: {{ section.settings.item_height_tablet }}px;
+            --padding-horizontal: {{ section.settings.padding_horizontal }}px;">
+
+  <!-- Grid de Categorias -->
+  <div class="category-grid-container">
+    <div class="category-grid">
+      {% for block in section.blocks limit: 6 %}
+        <a href="{{ block.settings.link }}" 
+           class="category-grid-item" 
+           style="background-color: {{ block.settings.bg_color }};"
+           {{ block.shopify_attributes }}>
+          <div class="category-grid-item__content">
+            {% if block.settings.icon != blank %}
+              <div class="category-grid-item__icon">
+                <img src="{{ block.settings.icon | img_url: '60x60' }}" 
+                     alt="{{ block.settings.title | escape }}"
+                     loading="lazy">
+              </div>
+            {% else %}
+              <div class="category-grid-item__icon category-grid-item__icon--placeholder">
+                {{ 'collection-' | append: forloop.index | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            {% endif %}
+            <span class="category-grid-item__title" 
+                  style="color: {{ block.settings.text_color }}; 
+                         font-size: {{ block.settings.font_size }}px;
+                         text-align: {{ block.settings.text_align }};">
+              {{ block.settings.title | escape }}
+            </span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+/* Container principal - visível apenas em mobile e tablet */
+.category-grid-img-section {
+  display: none;
+  padding: 0;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Para largura completa */
+.category-grid-img-section.full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* Para largura padrão do site */
+.category-grid-img-section.page-width {
+  width: 100%;
+  max-width: var(--page-width, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Container do Grid */
+.category-grid-container {
+  padding: 0 var(--padding-horizontal, 20px);
+  width: 100%;
+}
+
+/* Grid Layout */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+/* Item Individual */
+.category-grid-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 15px 16px 2px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  height: var(--item-height-mobile, 80px);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-grid-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Conteúdo do Item */
+.category-grid-item__content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Adicionar isto para alinhar à esquerda */
+  gap: 12px;
+  width: 100%;
+  padding-left: 0; /* Garantir que não há padding extra */
+}
+
+/* Ícone */
+.category-grid-item__icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-grid-item__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /*filter: brightness(0) invert(1); Deixa o ícone branco por padrão */
+}
+
+.category-grid-item__icon--placeholder {
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.category-grid-item__icon--placeholder svg {
+  width: 100%;
+  height: 100%;
+  fill: rgba(255,255,255,0.7);
+}
+
+/* Título */
+.category-grid-item__title {
+  flex: 1;
+  font-weight: 600;
+  line-height: 1.2;
+  word-wrap: break-word;
+  transition: color 0.2s ease;
+}
+
+/* Cores dos retângulos - similar à imagem */
+.category-grid-item:nth-child(1) { background-color: #FF5A5F; } /* Cachorro - Vermelho */
+.category-grid-item:nth-child(2) { background-color: #FF8C42; } /* Gato - Laranja */
+.category-grid-item:nth-child(3) { background-color: #E91E63; } /* Pássaro - Rosa */
+.category-grid-item:nth-child(4) { background-color: #7B68EE; } /* Peixe - Roxo */
+.category-grid-item:nth-child(5) { background-color: #00BCD4; } /* Outros - Ciano */
+.category-grid-item:nth-child(6) { background-color: #4CAF50; } /* Jardim - Verde */
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+  .category-grid-img-section {
+    display: block;
+  }
+  
+  .category-grid {
+    row-gap: 10px;    /* espaço entre linhas (vertical) */
+    column-gap: 7px; /* espaço entre colunas (horizontal) */
+  }
+  
+  .category-grid-item {
+    padding: 16px 12px 16px 2px;
+    height: var(--item-height-mobile, 70px);
+  }
+  
+  .category-grid-item__icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .category-grid-item__title {
+    font-size: 13px;
+  }
+  
+}
+
+/* Tablet (769px até 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .category-grid-img-section {
+    display: block;
+  }
+  
+  .category-grid {
+    gap: 10px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .category-grid-item {
+    padding: 16px 35px 16px 8px;
+    height: var(--item-height-tablet, 85px);
+  }
+  
+  .category-grid-item__icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .category-grid-item__title {
+    font-size: 13px;
+  }
+}
+
+/* Desktop - Oculta a seção */
+@media screen and (min-width: 1025px) {
+  .category-grid-img-section {
+    display: none !important;
+  }
+}
+
+/* Animações de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-grid-item {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.category-grid-item:nth-child(1) { animation-delay: 0.1s; }
+.category-grid-item:nth-child(2) { animation-delay: 0.15s; }
+.category-grid-item:nth-child(3) { animation-delay: 0.2s; }
+.category-grid-item:nth-child(4) { animation-delay: 0.25s; }
+.category-grid-item:nth-child(5) { animation-delay: 0.3s; }
+.category-grid-item:nth-child(6) { animation-delay: 0.35s; }
+
+/* Efeito de ripple no clique */
+.category-grid-item::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.category-grid-item:active::before {
+  width: 300px;
+  height: 300px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+  if (!section) return;
+  
+  // Adiciona classe para indicar que JS está ativo
+  section.classList.add('js-enabled');
+  
+  // Touch feedback melhorado para mobile
+  const items = section.querySelectorAll('.category-grid-item');
+  
+  items.forEach(item => {
+    item.addEventListener('touchstart', function() {
+      this.style.transform = 'scale(0.98)';
+    });
+    
+    item.addEventListener('touchend', function() {
+      this.style.transform = '';
+    });
+  });
+  
+  // Lazy loading das imagens
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            observer.unobserve(img);
+          }
+        }
+      });
+    });
+    
+    const lazyImages = section.querySelectorAll('img[data-src]');
+    lazyImages.forEach(img => imageObserver.observe(img));
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Categorias Grid img",
+  "class": "index-section category-grid-img",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Configurações Gerais"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Largura da seção",
+      "default": "page-width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "Largura padrão do site"
+        },
+        {
+          "value": "full-width",
+          "label": "Largura completa da tela"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Espaçamento"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Margem lateral (esquerda e direita)",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20,
+      "info": "Define o espaço nas laterais do grid"
+    },
+    {
+      "type": "header",
+      "content": "Altura dos Itens"
+    },
+    {
+      "type": "range",
+      "id": "item_height_mobile",
+      "label": "Altura dos itens - Mobile",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "item_height_tablet",
+      "label": "Altura dos itens - Tablet",
+      "min": 40,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "default": 95
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Categoria",
+      "limit": 9,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Ícone da categoria",
+          "info": "Recomendado: 60x60px, formato PNG com fundo transparente"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Categoria"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link da categoria"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Cor de fundo",
+          "default": "#FF5A5F"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Cor do texto",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "font_size",
+          "label": "Tamanho da fonte",
+          "min": 12,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 16
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Alinhamento do texto",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Esquerda"
+            },
+            {
+              "value": "center",
+              "label": "Centro"
+            },
+            {
+              "value": "right",
+              "label": "Direita"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Categorias Grid img",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "title": "Cachorro",
+            "bg_color": "#FF5A5F",
+            "text_color": "#FFFFFF"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Gato",
+            "bg_color": "#FF8C42",
+            "text_color": "#FFFFFF"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Pássaro",
+            "bg_color": "#E91E63",
+            "text_color": "#FFFFFF"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Peixe",
+            "bg_color": "#7B68EE",
+            "text_color": "#FFFFFF"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Outros",
+            "bg_color": "#00BCD4",
+            "text_color": "#FFFFFF"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "title": "Jardim",
+            "bg_color": "#4CAF50",
+            "text_color": "#FFFFFF"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

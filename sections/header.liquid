@@ -1,3 +1,222 @@
+{% schema %}
+{
+  "name": "Header and menus",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "main_menu_link_list",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "main_menu_alignment",
+      "label": "Logo alignment",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Logo left, menu left"
+        },
+        {
+          "value": "left-center",
+          "label": "Logo left, menu center"
+        },
+        {
+          "value": "left-drawer",
+          "label": "Logo left, menu drawer"
+        },
+        {
+          "value": "left-search-center-menu-below",
+          "label": "Logo left, search center, menu below"
+        },
+        {
+          "value": "center-left",
+          "label": "Logo center, menu left"
+        },
+        {
+          "value": "center",
+          "label": "Logo center, menu below"
+        },
+        {
+          "value": "center-drawer",
+          "label": "Logo center, menu drawer"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header style",
+      "default": "normal",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "sticky",
+          "label": "Sticky"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_index",
+      "label": "Overlay header over homepage",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_collection",
+      "label": "Overlay header over collection",
+      "info": "(if collection image is enabled)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "header_search_enable",
+      "label": "Show search icon"
+    },
+    {
+      "type": "header",
+      "content": "Search Bar Settings"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder_text",
+      "label": "Search placeholder text",
+      "default": "Buscar produtos...",
+      "info": "Text shown inside the search bar"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "type_navigation_size",
+      "label": "Text size",
+      "default": 18,
+      "min": 12,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "type_navigation_style",
+      "label": "Use heading font"
+    },
+    {
+      "type": "header",
+      "content": "Menu Hover Effects"
+    },
+    {
+      "type": "color",
+      "id": "menu_hover_color",
+      "label": "Menu hover color",
+      "default": "#EA6751"
+    },
+    {
+      "type": "color",
+      "id": "menu_hover_bg",
+      "label": "Submenu hover background",
+      "default": "#EA6751"
+    },
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show an announcement"
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Free shipping and returns",
+      "info": "When closed, the announcement will remain closed until the next visit. Change the text to see it again."
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "checkbox",
+      "id": "announcement_closable",
+      "label": "Allow users to close announcement"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Desktop Logo (screens > 1024px)"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Desktop Logo"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo-inverted",
+          "label": "Desktop White logo",
+          "info": "Used when on top of an image"
+        },
+        {
+          "type": "range",
+          "id": "desktop_logo_width",
+          "label": "Desktop logo width",
+          "default": 200,
+          "min": 100,
+          "max": 400,
+          "step": 10,
+          "unit": "px"
+        },
+        {
+          "type": "header",
+          "content": "Mobile/Tablet Logo (screens ≤ 1024px)"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_logo",
+          "label": "Mobile/Tablet Logo",
+          "info": "If not set, desktop logo will be used"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_logo_inverted",
+          "label": "Mobile/Tablet White logo",
+          "info": "Used when on top of an image on mobile/tablet"
+        },
+        {
+          "type": "range",
+          "id": "mobile_logo_width",
+          "label": "Mobile/Tablet logo width",
+          "default": 140,
+          "min": 60,
+          "max": 300,
+          "step": 10,
+          "unit": "px",
+          "info": "Set as a max-width, may appear smaller"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "settings": {}
+  }
+}
+{% endschema %}
+
 {%- assign main_menu = linklists[section.settings.main_menu_link_list] -%}
 
 {%- assign logo_alignment = 'left' -%}
@@ -14,6 +233,7 @@
 {% if section.settings.header_style == 'sticky' %}
   {%- assign sticky_header = true -%}
 {% endif %}
+
 {%- assign overlay_header = false -%}
 {%- assign has_logo = false -%}
 {% if template_name == 'index' and section.settings.sticky_index %}
@@ -23,464 +243,984 @@
   {%- assign overlay_header = true -%}
 {% endif %}
 
+{%- comment -%}
+  Get logo block settings
+{%- endcomment -%}
+{%- assign logo_block = section.blocks | where: 'type', 'logo' | first -%}
+
 {% style %}
-  .site-nav__link,
-  .site-nav__dropdown-link {
-    font-size: {{ section.settings.type_navigation_size }}px;
+/* ========================================
+   VARIÁVEIS GLOBAIS CSS CUSTOM PROPERTIES
+   ======================================== */
+:root {
+  /* Cor do header laranja */
+  --header-bg-color: #EA760F;
+  
+  /* Logo dimensions */
+  {% if logo_block %}
+    --desktop-logo-width: {{ logo_block.settings.desktop_logo_width | default: 200 }}px;
+    --mobile-logo-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;
+  {% else %}
+    --desktop-logo-width: 200px;
+    --mobile-logo-width: 140px;
+  {% endif %}
+  
+  /* Alturas e dimensões */
+  --custom-header-height: var(--header-height, auto);
+  --custom-header-total-height: var(--header-total-height, auto);
+  --custom-announcement-height: var(--announcement-height, 0px);
+  --custom-mobile-header-height: 56px;
+  --custom-mobile-search-height: 52px;
+  
+  /* Z-index hierarchy */
+  --custom-z-index-header: var(--z-index-header, 1000);
+  --custom-z-index-search-suggestions: calc(var(--z-index-header, 1000) + 1);
+  --custom-z-index-drawer: calc(var(--z-index-header, 1000) + 2);
+  --custom-z-index-drawer-overlay: calc(var(--z-index-header, 1000) + 3);
+  
+  /* Font sizes */
+  --custom-search-input-font-size-desktop: var(--font-size-base, 13px);
+  --custom-search-input-font-size-mobile: calc(var(--font-size-base, 13px) - 1px);
+  --custom-nav-font-size: {{ section.settings.type_navigation_size }}px;
+  
+  /* Espaçamentos */
+  --custom-drawer-padding-mobile: 70px;
+  --custom-drawer-padding-tablet: 120px;
+  
+  /* Cores do menu hover - personalizáveis */
+  --menu-hover-color: {{ section.settings.menu_hover_color | default: '#EC660C' }};
+  --menu-hover-bg: {{ section.settings.menu_hover_bg | default: '#EC660C' }};
+  --menu-hover-border: #ffccbb;
+  --menu-transition-duration: 0.3s;
+  --menu-transition-easing: ease;
+  --menu-dropdown-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ========================================
+   LOGO RESPONSIVE STYLES
+   ======================================== */
+
+/* Logo container base styles */
+.site-header__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 32px 0;
+}
+
+.site-header__logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  transition: opacity 0.3s ease;
+}
+
+/* Prevenção de zoom em inputs no iOS */
+@supports (-webkit-overflow-scrolling: touch) {
+  input[type="search"],
+  input[type="text"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Body reset */
+body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Header wrapper - APLICAR COR LARANJA AQUI */
+.header-wrapper {
+
+  width: 100% !important;
+  position: relative;
+}
+
+/* Header principal */
+.site-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: var(--custom-z-index-header);
+  background: var(--header-bg-color) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform var(--transition-duration, 1.38s) ease-in-out;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.site-header.has-announcement {
+  top: var(--custom-announcement-height);
+}
+
+/* Garantir que toda a área do header tenha fundo laranja */
+.site-header::before,
+.site-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: -1;
+}
+
+/* Announcement bar */
+.announcement-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: calc(var(--custom-z-index-header) - 1);
+}
+
+/* Drawer global */
+.drawer {
+  z-index: var(--custom-z-index-drawer-overlay) !important;
+}
+
+.js-drawer-open .drawer {
+  z-index: var(--custom-z-index-drawer-overlay) !important;
+}
+
+.drawer__inner {
+  padding-top: 0 !important;
+}
+
+/* Navigation font size global */
+.site-nav__link,
+.site-nav__dropdown-link {
+  font-size: var(--custom-nav-font-size);
+}
+
+{% if section.settings.type_navigation_size < 18 %}
+.site-nav__link {
+  padding-left: var(--spacing-small, 8px);
+  padding-right: var(--spacing-small, 8px);
+}
+{% endif %}
+
+/* Garante que não há espaços em branco antes/depois do header */
+.site-header {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Corrige se há alguma configuração do tema que esteja sobrescrevendo */
+.header-wrapper:not(.header-wrapper--overlay) .site-header {
+  background-color: var(--header-bg-color) !important;
+  background: var(--header-bg-color) !important;
+}
+
+
+/* ========================================
+   DESKTOP - TELAS ACIMA DE 1025px
+   ======================================== */
+@media only screen and (min-width: 1025px) {
+  .site-header__logo {
+    max-width: var(--desktop-logo-width);
+  }
+  
+  .site-header__logo img {
+    max-width: var(--desktop-logo-width);
+  }
+  
+  /* Show desktop logos, hide mobile logos */
+  .logo-desktop {
+    display: block !important;
+  }
+  
+  .logo-mobile {
+    display: none !important;
+  }
+  
+  .logo-desktop-inverted {
+    display: none;
+  }
+  
+  .logo-mobile-inverted {
+    display: none !important;
+  }
+  
+  /* Show inverted desktop logo when overlay */
+  .is-light .logo-desktop {
+    display: none !important;
+  }
+  
+  .is-light .logo-desktop-inverted {
+    display: block !important;
   }
 
-  {% if section.settings.type_navigation_size < 18 %}
-    .site-nav__link {
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-  {% endif %}
+  .mobile-header-wrapper {
+    display: none !important;
+  }
 
-  /* Estilos para o novo layout */
+  .index-section {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .page-width > .header-layout {
+    display: flex !important;
+    background-color: #fff !important;
+  }
+
+  /* GARANTIR QUE O CONTAINER DO DESKTOP TENHA FUNDO BRANCO */
+  .page-width {
+    background-color: #fff !important;
+  }
+
+  /* Menu hover effects para desktop */
+  .site-nav__link {
+    position: relative;
+    transition: color var(--menu-transition-duration) var(--menu-transition-easing);
+    color: var(--color-text, #333);
+    font-weight: 600;
+  }
+
+  .site-nav__item:hover > .site-nav__link,
+  .site-nav__item.is-focused > .site-nav__link,
+  .site-nav__item:focus-within > .site-nav__link {
+    color: var(--menu-hover-color) !important;
+    position: relative;
+    z-index: 10;
+  }
+
+  .site-nav__link:hover svg,
+  .site-nav__link:hover .icon {
+    stroke: var(--menu-hover-color);
+    transition: all var(--menu-transition-duration) var(--menu-transition-easing);
+  }
+
+  /* Dropdown containers */
+  .site-nav__dropdown,
+  .site-nav__dropdown-menu {
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 12px;
+    box-shadow: var(--menu-dropdown-shadow);
+    z-index: calc(var(--custom-z-index-header) + 1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--menu-transition-duration) var(--menu-transition-easing);
+    min-width: 280px;
+    max-width: 400px;
+    width: auto;
+    padding: 12px 0;
+    margin-top: 0;
+  }
+
+  /* Área de transição invisível */
+  .site-nav__item::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: transparent;
+    z-index: calc(var(--custom-z-index-header) + 1);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-nav__item:hover::before {
+    pointer-events: auto;
+  }
+
+  /* Show dropdown on hover */
+  .site-nav__item:hover .site-nav__dropdown,
+  .site-nav__item:hover .site-nav__dropdown-menu,
+  .site-nav__item.is-focused .site-nav__dropdown,
+  .site-nav__item.is-focused .site-nav__dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+
+  /* Dropdown links */
+  .site-nav__dropdown-link,
+  .site-nav__dropdown a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--color-text, #333);
+    text-decoration: none;
+    transition: all var(--menu-transition-duration) var(--menu-transition-easing);
+    border-radius: 30px;
+    margin: 2px 8px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.3;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+  }
+
+  .site-nav__dropdown-link:hover,
+  .site-nav__dropdown a:hover {
+    background-color: var(--menu-hover-bg) !important;
+    color: var(--menu-hover-color) !important;
+    padding: 8px 18px;
+    transform: translateX(4px);
+  }
+
+  /* Z-index hierarchy control */
+  .site-nav__item {
+    position: relative;
+    z-index: 1;
+  }
+
+  .site-nav__item:hover,
+  .site-nav__item.is-focused {
+    z-index: calc(var(--custom-z-index-header) + 2);
+  }
+
+  /* Transição suave para saída do dropdown */
+  .site-nav__item:not(:hover) .site-nav__dropdown,
+  .site-nav__item:not(:hover) .site-nav__dropdown-menu {
+    transition-delay: 0.3s;
+  }
+
+  /* Menu below layout specific */
+  .header-menu-below {
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+    max-height: 200px;
+    overflow: visible;
+    background-color: #fff !important;
+  }
+
+  .header-menu-below.menu-hidden {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-top: none !important;
+  }
+
+  .header-menu-below.menu-visible {
+    opacity: 1 !important;
+    max-height: 200px !important;
+    overflow: visible !important;
+  }
+
+  /* Layout específico: left-search-center-menu-below */
   {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
-    .header-layout--left-search-center-menu-below {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      position: relative;
-    }
-    
-    .header-layout--left-search-center-menu-below .header-item--search-center {
-      flex: 1 1 auto;
-      max-width: 650px;
-      margin: 0 20px;
-      width: 100%;
-    }
-    
-    .header-layout--left-search-center-menu-below .header-item--search-center .site-nav {
-      width: 100%;
-    }
-    
-    .header-layout--left-search-center-menu-below .header-item--search-center .site-nav__link {
-      width: 100%;
-      padding: 0;
-    }
-    
-    /* Barra de busca estilizada */
-    .header-search-bar {
-      display: flex;
-      align-items: center;
-      background-color: #f5f5f5;
-      border: 1px solid #e0e0e0;
-      border-radius: 25px;
-      padding: 8px 20px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      width: 100%;
-      min-width: 300px;
-    }
-    
-    .header-search-bar:hover {
-      background-color: #ffffff;
-      border-color: #333;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .header-search-bar .icon-search {
-      width: 18px;
-      height: 18px;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-    
-    .header-search-bar .search-placeholder {
-      color: #888;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
+  .header-layout--left-search-center-menu-below {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    background-color: #fff !important;
+  }
 
-    /* Cor dos ícones do menu nav (mobile e desktop) */
-    .site-nav__link--icon .icon,
-    .mobile-nav .icon,
-    .mobile-bottom-nav__icon svg,
-    .mobile-bottom-nav__icon,
-    .mobile-notifications .icon-bell {
-      transition: all 0.3s ease;
-    }
+  .header-layout--left-search-center-menu-below .header-item--search-center {
+    flex: 1 1 auto;
+    max-width: 650px;
+    margin: 0 var(--spacing-large, 20px);
+    width: 100%;
+  }
 
-    /* Cor específica para ícones account e cart */
-    .cart-link .icon,
-    .site-nav__link--icon[href*="account"] .icon,
-    .site-nav__link--icon[href*="cart"] .icon,
-    .js-drawer-open-cart .icon,
-    .header-item--icons .site-nav__link--icon .icon {
-      transition: all 0.3s ease;
-    }
+  .header-layout--left-search-center-menu-below .header-item--search-center .site-nav {
+    width: 100%;
+  }
 
-    /* Cor para o badge do carrinho */
-    .cart-link__bubble--visible {
-      transition: all 0.3s ease;
-    }
-    
-    /* Esconde o ícone de busca padrão quando este layout está ativo */
-    .header-layout--left-search-center-menu-below .header-item--icons .js-search-header {
-      display: none !important;
-    }
-    
-    .header-layout--left-search-center-menu-below .header-item--logo {
-      flex: 0 0 auto;
-    }
-    
-    .header-layout--left-search-center-menu-below .header-item--icons {
-      flex: 0 0 auto;
-    }
-    
-    .header-menu-below {
-      width: 100%;
-      text-align: center;
-      padding-top: 15px;
-      padding-bottom: 1px;
-      border-top: 1px solid rgba(0,0,0,0.1);
-    }
+  .header-layout--left-search-center-menu-below .header-item--search-center .site-nav__link {
+    width: 100%;
+    padding: 0;
+  }
 
-    .header-menu-below .site-nav__link:hover {
-      color: #efa31d !important;
-    }
-    
-    /* Responsividade para diferentes tamanhos de tela */
-    @media only screen and (min-width: 750px) and (max-width: 1199px) {
-      .header-layout--left-search-center-menu-below .header-item--search-center {
-        max-width: 500px;
-        margin: 0 15px;
-      }
-    }
-    
-    @media only screen and (min-width: 1200px) and (max-width: 1599px) {
-      .header-layout--left-search-center-menu-below .header-item--search-center {
-        max-width: 600px;
-      }
-    }
-    
-    @media only screen and (min-width: 1600px) {
-      .header-layout--left-search-center-menu-below {
-        justify-content: center;
-        gap: 40px;
-      }
-      
-      .header-layout--left-search-center-menu-below .header-item--logo {
-        margin-right: auto;
-      }
-      
-      .header-layout--left-search-center-menu-below .header-item--search-center {
-        flex: 0 1 650px;
-        margin: 0 40px;
-      }
-      
-      .header-layout--left-search-center-menu-below .header-item--icons {
-        margin-left: auto;
-      }
-    }
-    
-    /* Estilos Mobile - Layout em 3 partes */
-    @media only screen and (max-width: 749px) {
-      .header-layout--left-search-center-menu-below {
-        display: block;
-        position: relative;
-      }
-      
-      /* Container para logo e notificações */
-      .mobile-header-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-      }
-      
-      .mobile-header-top .header-item--logo {
-        flex: 0 0 auto;
-      }
-      
-      /* Ícone de notificações mobile */
-      .mobile-notifications {
-        display: flex;
-        align-items: center;
-      }
-      
-      .mobile-notifications .icon-bell {
-        width: 22px;
-        height: 22px;
-        position: relative;
-      }
+  .header-search-form {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background-secondary, #f5f5f5);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 20px;
+    padding: 6px var(--spacing-medium, 16px);
+    transition: all var(--transition-duration, 0.3s) ease;
+    width: 100%;
+    min-width: 300px;
+    position: relative;
+    height: 40px;
+    box-sizing: border-box;
+  }
 
-      /* Contorno do ícone de notificação */
-      .mobile-notifications .site-nav__link:hover,
-      .mobile-notifications .site-nav__link:hover .icon-bell {
-        color: #efa31d !important;
-        transition: color 0.3s ease;
-      }
+  .header-search-form:hover,
+  .header-search-form:focus-within {
+    border-color: var(--color-border-focus, #999);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
 
-      .mobile-notifications .site-nav__link,
-      .mobile-notifications .icon-bell {
-        transition: color 0.3s ease;
-      }
-      
-      .notification-badge {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background: red;
-        color: white;
-        font-size: 10px;
-        padding: 2px 5px;
-        border-radius: 10px;
-        min-width: 16px;
-        text-align: center;
-      }
-      
-      /* Barra de busca mobile - segunda linha */
-      .mobile-search-container {
-        padding: 0 15px 8px;
-        width: 100%;
-      }
-      
-      .header-layout--left-search-center-menu-below .header-item--search-center {
-        position: static;
-        left: auto;
-        transform: none;
-        max-width: 100%;
-        width: 100%;
-      }
-      
-      .mobile-search-container .header-search-bar {
-        padding: 5px 15px;
-        height: 36px;
-        border-radius: 20px;
-        width: 100%;
-        background-color: #f8f8f8;
-      }
-      
-      .mobile-search-container .header-search-bar .icon-search {
-        width: 16px;
-        height: 16px;
-      }
-      
-      .mobile-search-container .header-search-bar .search-placeholder {
-        font-size: 13px;
-      }
-      
-      /* Menu mobile - terceira parte */
-      .mobile-menu-container {
-        border-top: 1px solid #e0e0e0;
-        padding: 10px 15px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      .mobile-menu-container .site-nav {
-        display: flex;
-        gap: 20px;
-        white-space: nowrap;
-      }
-      
-      .mobile-menu-container .site-nav__item {
-        display: inline-block;
-      }
-      
-      .mobile-menu-container .site-nav__link {
-        font-size: 15px;
-        padding: 5px 0;
-        color: #333;
-        text-decoration: none;
-      }
-      
-      .mobile-menu-container .site-nav__dropdown {
-        display: none; /* Esconde dropdowns no mobile */
-      }
-      
-      /* Bottom Navigation Mobile */
-      .mobile-bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #fff;
-        border-top: 1px solid #e0e0e0;
-        display: flex;
-        justify-content: space-between;;
-        align-items: center;
-        padding: 8px 0;
-        z-index: 999;
-        box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-      }
-      
-      .mobile-bottom-nav__item {
-        flex: 1;
-        text-align: center;
-        display: flex;
-        justify-content: center;    /* Centraliza o conteúdo */
-        align-items: center;
-      }
-      
-      .mobile-bottom-nav__link {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-        text-decoration: none;
-        color: #666;
-        font-size: 12px;
-        position: relative;
-        width: 100%;               /* Ocupa toda a largura do item */
-        justify-content: center;   /* Centraliza ícone e texto */
-      }
-      
-      .mobile-bottom-nav__link:active {
-        color: #000;
-      }
-      
-      .mobile-bottom-nav__icon {
-        width: 22px;
-        height: 22px;
-        display: block;
-      }
-      
-      .mobile-bottom-nav__icon svg {
-        width: 100%;
-        height: 100%;
-      }
-      
-      .mobile-bottom-nav__badge {
-        position: absolute;
-        top: -5px;
-        right: 50%;
-        transform: translateX(10px);
-        background: #ff4444;
-        color: white;
-        font-size: 9px;
-        padding: 1px 4px;
-        border-radius: 10px;
-        min-width: 14px;
-        text-align: center;
-        line-height: 1.2;
-      }
-      
-      /* Ajusta o padding inferior do conteúdo para não ficar atrás da bottom nav */
-      body.has-mobile-bottom-nav {
-        padding-bottom: 60px;
-      }
-      
-      /* Esconde elementos desktop no mobile */
-      .header-layout--left-search-center-menu-below .header-item--icons {
-        display: none;
-      }
-      
-      .header-menu-below {
-        display: none;
-      }
-    }
+  .header-search-form .icon-search {
+    width: 16px;
+    height: 16px;
+    margin-right: var(--spacing-small, 8px);
+    flex-shrink: 0;
+    color: var(--color-text-secondary, #666);
+    cursor: pointer;
+  }
 
-    /* Header sempre fixo em todas as telas */
-    .site-header {
-      position: fixed !important;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
+  .header-search-input {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+  }
 
-    /* Adiciona espaçamento no topo do body para compensar o header fixo */
-    body {
-      padding-top: 180px; /* Ajuste conforme a altura do seu header */
-    }
+  .header-search-input::placeholder {
+    color: var(--color-text-secondary, #888);
+    font-size: var(--custom-search-input-font-size-desktop);
+  }
 
-     @media only screen and (min-width: 481px) and (max-width: 749px) {
-      body {
-        padding-top: 200px; /* Ajuste conforme a altura do seu header */
-      }
+  .header-search-submit {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
 
-     }
+  .header-search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-background, white);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: var(--custom-z-index-search-suggestions);
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+  }
 
-    /* Ajuste para mobile com bottom navigation */
-    @media only screen and (max-width: 749px) {
-      {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
-        body.has-mobile-bottom-nav {
-          padding-top: 190px; /* Maior para acomodar as 3 partes do header mobile */
-          padding-bottom: 60px;
-        }
-      {% endif %}
-    }
+  .header-search-suggestions.active {
+    display: block;
+  }
 
-    /* Garantir que o header wrapper também seja fixo */
-    .header-wrapper {
-      position: fixed !important;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: #fff;
-    }
+  .search-suggestion-item {
+    padding: var(--spacing-small, 12px) var(--spacing-large, 20px);
+    border-bottom: 1px solid var(--color-border-light, #f0f0f0);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color var(--transition-duration, 0.2s) ease;
+  }
 
-    /* Ajustes para announcement bar quando presente */
-    {% if section.settings.show_announcement %}
-      body {
-        padding-top: 120px; /* Mais espaço se tiver announcement bar */
-      }
-      
-      @media only screen and (max-width: 749px) {
-        {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
-          body.has-mobile-bottom-nav {
-            padding-top: 190px; /* Ainda mais espaço no mobile */
-          }
-        {% endif %}
-      }
-    {% endif %}
+  .search-suggestion-item:last-child {
+    border-bottom: none;
+  }
 
-    /* Hover effects para logo e ícones */
-    .site-header__logo-link:hover {
-      transform: scale(1.05);
-      transition: transform 0.3s ease;
-    }
+  .search-suggestion-item:hover {
+    background-color: var(--color-background-secondary, #f8f8f8);
+  }
 
-    .site-header__logo-link {
-      transition: transform 0.3s ease;
-    }
+  .search-suggestion-item .icon-search {
+    width: 14px;
+    height: 14px;
+    margin-right: var(--spacing-small, 10px);
+    color: var(--color-text-secondary, #999);
+  }
 
-    /* Contorno dos ícones do menu */
-    .mobile-menu-container .site-nav__link:hover {
-      color: #efa31d !important;
-      transition: color 0.3s ease;
-    }
+  .header-layout--left-search-center-menu-below .header-item--icons .js-search-header {
+    display: none !important;
+  }
 
-    .mobile-menu-container .site-nav__link {
-      transition: color 0.3s ease;
-    }
+  .header-layout--left-search-center-menu-below .header-item--logo {
+    flex: 0 0 auto;
+  }
 
-    /* Contorno dos ícones account e cart */
-    .header-item--icons .site-nav__link:hover,
-    .mobile-bottom-nav__link:hover {
-      color: #efa31d !important;
-      transition: color 0.3s ease;
-    }
+  .header-layout--left-search-center-menu-below .header-item--icons {
+    flex: 0 0 auto;
+  }
 
-    .header-item--icons .site-nav__link,
-    .mobile-bottom-nav__link {
-      transition: color 0.3s ease;
-    }
-    
-    /* Esconde elementos mobile no desktop */
-    @media only screen and (min-width: 750px) {
-      .mobile-header-top,
-      .mobile-search-container,
-      .mobile-menu-container,
-      .mobile-notifications,
-      .mobile-bottom-nav {
-        display: none !important;
-      }
-    }
+  .header-menu-below {
+    width: 100%;
+    text-align: center;
+    padding-top: var(--spacing-medium, 15px);
+    padding-bottom: 20px;
+    border-top: 1px solid var(--color-border-light, rgba(0,0,0,0.1));
+    background-color: #fff !important;
+  }
+
+  .header-layout--left-search-center-menu-below .header-menu-below .site-nav__link:hover {
+    color: var(--menu-hover-color) !important;
+  }
+
+  .header-menu-below .site-nav__link:hover {
+    color: var(--menu-hover-color) !important;
+  }
+
+  .header-layout--left-search-center-menu-below .site-nav__dropdown,
+  .header-layout--left-search-center-menu-below .site-nav__dropdown-menu {
+    top: calc(100% + 8px);
+    margin-top: 2px;
+  }
   {% endif %}
+
+  /* Remove animações que podem interferir */
+  .site-nav__link:hover {
+    animation: none;
+  }
+
+  /* Mega menu support */
+  .site-nav__mega-dropdown {
+    width: 100%;
+    max-width: 800px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    min-width: 500px;
+  }
+
+  .site-nav__item:hover .site-nav__mega-dropdown {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .site-nav__mega-dropdown .site-nav__dropdown-link:hover,
+  .site-nav__mega-dropdown a:hover {
+    background-color: var(--menu-hover-bg) !important;
+    border-radius: 8px;
+    margin: 2px 12px;
+    transform: translateX(4px);
+  }  
+}
+
+
+/* ========================================
+   MOBILE - TELAS ATÉ 1024px
+   ======================================== */
+@media only screen and (max-width: 1024px) {
+  .site-header__logo {
+    max-width: var(--mobile-logo-width);
+  }
+  
+  .site-header__logo img {
+    max-width: var(--mobile-logo-width);
+  }
+  
+  /* Hide desktop logos, show mobile logos (or fallback to desktop) */
+  .logo-desktop {
+    display: none !important;
+  }
+  
+  .logo-desktop-inverted {
+    display: none !important;
+  }
+  
+  /* Show mobile logo if available, otherwise show desktop as fallback */
+  .logo-mobile {
+    display: block !important;
+  }
+  
+  .logo-mobile-inverted {
+    display: none !important;
+  }
+  
+  /* If no mobile logo is set, show desktop logo as fallback */
+  .logo-mobile.logo-fallback {
+    display: none !important;
+  }
+  
+  .logo-mobile.logo-fallback + .logo-desktop {
+    display: block !important;
+    max-width: var(--mobile-logo-width);
+  }
+  
+  /* Show inverted mobile logo when overlay */
+  .is-light .logo-mobile {
+    display: none !important;
+  }
+  
+  .is-light .logo-mobile-inverted {
+    display: block !important;
+  }
+  
+  /* Fallback for inverted if no mobile inverted logo */
+  .is-light .logo-mobile-inverted.logo-fallback {
+    display: none !important;
+  }
+  
+  .is-light .logo-mobile-inverted.logo-fallback + .logo-desktop-inverted {
+    display: block !important;
+    max-width: var(--mobile-logo-width);
+  }
+
+  .mobile-header-wrapper {
+    background: var(--header-bg-color) !important;
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-small, 25px) var(--spacing-medium, 25px);
+    height: var(--custom-mobile-header-height);
+    min-height: var(--custom-mobile-header-height);
+    max-height: var(--custom-mobile-header-height);
+    box-sizing: border-box;
+    background-color: var(--header-bg-color) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .mobile-menu-button,
+  .mobile-cart-button {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff !important;
+  }
+
+  .mobile-menu-button svg,
+  .mobile-cart-button svg {
+    width: 24px;
+    height: 24px;
+    stroke: #fff !important;
+    color: #fff !important;
+  }
+
+  .mobile-logo-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile-logo-center .site-header__logo {
+    max-width: var(--mobile-logo-width);
+  }
+
+  .mobile-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--color-accent, #EC660C);
+    color: var(--color-background, white);
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Search bar mobile */
+  .mobile-search-bar {
+    padding: 17px var(--spacing-medium, 30px) var(--spacing-small, 12px);
+    transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    box-sizing: border-box;
+    max-height: 100px;
+    opacity: 1;
+    background-color: var(--header-bg-color) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .mobile-search-bar.search-visible {
+    padding: 17px var(--spacing-medium, 30px) var(--spacing-small, 45px) !important;
+  }
+
+  .mobile-search-form {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background-secondary, #f5f5f5);
+    border: 1px solid var(--color-border, #e0e0e0);
+    border-radius: 20px;
+    padding: var(--spacing-small, 8px) var(--spacing-medium, 16px);
+    transition: all var(--transition-duration, 0.3s) ease;
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+  }
+
+  .mobile-search-form:focus-within {
+    border-color: var(--color-border-focus, #999);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .mobile-search-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: var(--spacing-small, 8px);
+    flex-shrink: 0;
+    color: var(--color-text-secondary, #666);
+  }
+
+  .mobile-search-input {
+    flex: 1 !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+  }
+
+  .mobile-search-input::placeholder {
+    color: var(--color-text-secondary, #888);
+  }
+
+  .mobile-search-submit {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Esconde elementos desktop */
+  .page-width > .header-layout,
+  .header-item--icons,
+  .header-menu-below,
+  .site-header__search-container {
+    display: none !important;
+  }
+
+  /* FORÇA O FUNDO LARANJA EM TODOS OS ELEMENTOS DO MOBILE */
+  .site-header,
+  .header-wrapper,
+  .mobile-header-wrapper,
+  .mobile-header-main,
+  .mobile-search-bar {
+    background-color: var(--header-bg-color) !important;
+    background-image: none !important;
+  }
+
+  .header-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mobile-header-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mobile-header-wrapper {
+    min-height: auto !important;
+    height: auto !important;
+  }
+
+  /* Remove qualquer pseudo-elemento que possa estar criando espaços brancos */
+  .mobile-header-wrapper::before,
+  .mobile-header-wrapper::after,
+  .mobile-header-main::before,
+  .mobile-header-main::after,
+  .mobile-search-bar::before,
+  .mobile-search-bar::after {
+    display: none !important;
+  }
+
+  .site-header * {
+    border-top-color: var(--header-bg-color) !important;
+    border-bottom-color: var(--header-bg-color) !important;
+  }
+
+  .header-wrapper {
+    background-color: var(--header-bg-color) !important;
+    background: var(--header-bg-color) !important;
+    width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .site-header {
+    background-color: var(--header-bg-color) !important;
+    background: var(--header-bg-color) !important;
+    width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .site-header,
+  .header-wrapper,
+  .mobile-header-wrapper,
+  .mobile-search-bar.mobile-in-flow {
+    background-color: var(--header-bg-color) !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important; /* remove a linha/ombra */
+  }
+
+  /* Remove pseudo-elementos que podem ter fundo branco ou criar faixas */
+  .site-header::before,
+  .site-header::after,
+  .header-wrapper::before,
+  .header-wrapper::after,
+  .mobile-header-wrapper::before,
+  .mobile-header-wrapper::after {
+    display: none !important;
+    background: transparent !important;
+    content: none !important;
+  }
+
+  /* Garante que a barra que está in-flow fique diretamente sob o header sem borda */
+  .mobile-search-bar.mobile-in-flow {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    z-index: calc(var(--custom-z-index-header) - 1) !important; /* header fica por cima */
+    box-sizing: border-box;
+  }
+
+  /* Evita linhas finas por subpixel/anti-aliasing */
+  .site-header,
+  .mobile-search-bar.mobile-in-flow {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+}
+
+
+/* ========================================
+   TABLET - TELAS DE 768px ATÉ 1024px
+   ======================================== */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .mobile-header-main {
+    padding: var(--spacing-medium, 30px) var(--spacing-large, 30px);
+    height: 64px;
+    background-color: var(--header-bg-color) !important;
+  }
+
+  .mobile-logo-center .site-header__logo {
+    max-width: var(--mobile-logo-width);
+  }
+
+  .mobile-search-bar {
+    padding: 17px var(--spacing-large, 30px) var(--spacing-medium, 15px);
+    background-color: var(--header-bg-color) !important;
+  }
+
+  .mobile-search-form {
+    height: 44px;
+    padding: var(--spacing-small, 10px) 18px;
+  }
+
+  .mobile-search-input {
+    font-size: 15px;
+  }
+
+  .drawer__inner {
+    padding-top: var(--custom-drawer-padding-tablet) !important;
+  }
+
+  .js-drawer-open-nav ~ .drawer,
+  .drawer--left {
+    z-index: var(--custom-z-index-drawer-overlay) !important;
+    position: fixed !important;
+    top: 0 !important;
+  }
+
+  .drawer__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-background, white);
+    z-index: calc(var(--custom-z-index-drawer-overlay) + 1);
+    padding: var(--spacing-medium, 15px);
+    border-bottom: 1px solid var(--color-border, #e0e0e0);
+  }
+}
+
+
+/* ========================================
+   MOBILE PEQUENO - TELAS ATÉ 589px
+   ======================================== */
+@media only screen and (max-width: 589px) {
+  .drawer__inner {
+    padding-top: var(--custom-drawer-padding-mobile) !important;
+  }
+
+  .js-drawer-open-nav ~ .drawer,
+  .drawer--left {
+    z-index: var(--custom-z-index-drawer-overlay) !important;
+    position: fixed !important;
+    top: 0 !important;
+  }
+
+  .drawer__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-background, white);
+    z-index: calc(var(--custom-z-index-drawer-overlay) + 1);
+    padding: var(--spacing-medium, 15px);
+    border-bottom: 1px solid var(--color-border, #e0e0e0);
+  }
+
+  /* FORÇA AINDA MAIS O FUNDO LARANJA NO MOBILE PEQUENO */
+  .site-header,
+  .header-wrapper,
+  .mobile-header-wrapper,
+  .mobile-header-main,
+  .mobile-search-bar {
+    background-color: var(--header-bg-color) !important;
+    background-image: none !important;
+    background: var(--header-bg-color) !important;
+  }
+
+  /* Remove borders que podem criar linhas brancas */
+  .mobile-header-main {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+  }
+
+  .mobile-search-bar {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+  }
+}
+
 {% endstyle %}
 
 <div data-section-id="{{ section.id }}" data-section-type="header-section">
@@ -494,6 +1234,124 @@
       class="site-header{%if section.settings.type_navigation_style %} site-header--heading-style{% endif %}"
       data-sticky="{{ sticky_header }}"
       data-overlay="{{ overlay_header }}">
+     
+      <!-- MOBILE & TABLET HEADER -->
+      <div class="mobile-header-wrapper">
+        <!-- Linha 1: Menu Hamburger | Logo | Carrinho -->
+        <div class="mobile-header-main">
+          <!-- Menu Hamburger -->
+          <button type="button" class="mobile-menu-button js-drawer-open-nav" aria-controls="NavDrawer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span class="visually-hidden">{{ 'general.drawers.navigation' | t }}</span>
+          </button>
+
+          <!-- Logo Centralizado -->
+          <div class="mobile-logo-center">
+            {% if logo_block %}
+              <a href="{{ routes.root_url }}" class="site-header__logo-link">
+                <div class="site-header__logo">
+                  {% comment %} Mobile/Tablet Logo (≤ 1024px) {% endcomment %}
+                  {% if logo_block.settings.mobile_logo %}
+                    <img class="logo-mobile"
+                         src="{{ logo_block.settings.mobile_logo | img_url: '300x' }}"
+                         alt="{{ shop.name }}"
+                         style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                  {% else %}
+                    {% comment %} Fallback to desktop logo for mobile {% endcomment %}
+                    {% if logo_block.settings.logo %}
+                      <img class="logo-mobile logo-fallback"
+                           src="{{ logo_block.settings.logo | img_url: '300x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                    {% else %}
+                      <span class="logo-mobile">{{ shop.name }}</span>
+                    {% endif %}
+                  {% endif %}
+
+                  {% comment %} Mobile/Tablet Inverted Logo {% endcomment %}
+                  {% if logo_block.settings.mobile_logo_inverted %}
+                    <img class="logo-mobile-inverted"
+                         src="{{ logo_block.settings.mobile_logo_inverted | img_url: '300x' }}"
+                         alt="{{ shop.name }}"
+                         style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                  {% else %}
+                    {% comment %} Fallback to desktop inverted logo for mobile {% endcomment %}
+                    {% if logo_block.settings.logo-inverted %}
+                      <img class="logo-mobile-inverted logo-fallback"
+                           src="{{ logo_block.settings.logo-inverted | img_url: '300x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                    {% endif %}
+                  {% endif %}
+
+                  {% comment %} Desktop Logo (> 1024px) - Hidden on mobile {% endcomment %}
+                  {% if logo_block.settings.logo %}
+                    <img class="logo-desktop"
+                         src="{{ logo_block.settings.logo | img_url: '400x' }}"
+                         alt="{{ shop.name }}"
+                         style="max-width: {{ logo_block.settings.desktop_logo_width | default: 200 }}px;">
+                  {% else %}
+                    <span class="logo-desktop">{{ shop.name }}</span>
+                  {% endif %}
+
+                  {% comment %} Desktop Inverted Logo {% endcomment %}
+                  {% if logo_block.settings.logo-inverted %}
+                    <img class="logo-desktop-inverted"
+                         src="{{ logo_block.settings.logo-inverted | img_url: '400x' }}"
+                         alt="{{ shop.name }}"
+                         style="max-width: {{ logo_block.settings.desktop_logo_width | default: 200 }}px;">
+                  {% endif %}
+                </div>
+              </a>
+            {% else %}
+              <!-- Fallback if no logo block -->
+              <a href="{{ routes.root_url }}" class="site-header__logo-link">
+                <div class="site-header__logo">
+                  <span>{{ shop.name }}</span>
+                </div>
+              </a>
+            {% endif %}
+          </div>
+
+          <!-- Carrinho -->
+          <button type="button" class="mobile-cart-button js-drawer-open-cart" aria-controls="CartDrawer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            {% if cart.item_count > 0 %}
+              <span class="mobile-cart-badge">{{ cart.item_count }}</span>
+            {% endif %}
+            <span class="visually-hidden">{{ 'cart.general.title' | t }}</span>
+          </button>
+        </div>
+
+        <!-- Linha 2: Barra de Busca -->
+        {% if section.settings.header_search_enable %}
+          <div class="mobile-search-bar" id="mobileSearchBar">
+            <form action="{{ routes.search_url }}" method="get" class="mobile-search-form" role="search">
+              <input type="hidden" name="type" value="{{ settings.search_type }}">
+              <svg class="mobile-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="search"
+                name="q"
+                value="{{ search.terms | escape }}"
+                placeholder="{{ section.settings.search_placeholder_text | default: 'Buscar produtos...' }}"
+                class="mobile-search-input"
+                autocomplete="off"
+                aria-label="{{ 'general.search.placeholder' | t }}">
+              <button type="submit" class="mobile-search-submit">
+                <span class="visually-hidden">{{ 'general.search.submit' | t }}</span>
+              </button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- DESKTOP HEADER (Original) -->
       <div class="page-width">
         <div
           class="header-layout header-layout--{{ section.settings.main_menu_alignment }}"
@@ -501,73 +1359,80 @@
 
           {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
             <!-- Layout Desktop -->
-            <div class="header-item header-item--logo medium-down--hide">
-              {% include 'header-logo-block' %}
-            </div>
+            <div class="header-item header-item--logo">
+              {% if logo_block %}
+                <a href="{{ routes.root_url }}" class="site-header__logo-link">
+                  <div class="site-header__logo">
+                    {% comment %} Desktop Logo (> 1024px) {% endcomment %}
+                    {% if logo_block.settings.logo %}
+                      <img class="logo-desktop"
+                           src="{{ logo_block.settings.logo | img_url: '400x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.desktop_logo_width | default: 200 }}px;">
+                    {% else %}
+                      <span class="logo-desktop">{{ shop.name }}</span>
+                    {% endif %}
 
-            <div class="header-item header-item--search-center medium-down--hide">
-              {% if section.settings.header_search_enable %}
-                <div class="site-nav">
-                  <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-search-header js-no-transition">
-                    <div class="header-search-bar">
-                      {% include 'icon-search' %}
-                      <span class="search-placeholder">{{ section.settings.search_placeholder_text | default: 'Search' }}</span>
-                    </div>
-                  </a>
-                </div>
-              {% endif %}
-            </div>
+                    {% comment %} Desktop Inverted Logo {% endcomment %}
+                    {% if logo_block.settings.logo-inverted %}
+                      <img class="logo-desktop-inverted"
+                           src="{{ logo_block.settings.logo-inverted | img_url: '400x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.desktop_logo_width | default: 200 }}px;">
+                    {% endif %}
 
-            <div class="header-item header-item--icons medium-down--hide">          
-              {% include 'header-icons' %}
-            </div>
+                    {% comment %} Mobile Logo (hidden on desktop) {% endcomment %}
+                    {% if logo_block.settings.mobile_logo %}
+                      <img class="logo-mobile"
+                           src="{{ logo_block.settings.mobile_logo | img_url: '300x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                    {% endif %}
 
-            <!-- Layout Mobile - 3 partes -->
-            <!-- Parte 1: Logo e Notificações -->
-            <div class="mobile-header-top large-up--hide">
-              <div class="header-item header-item--logo">
-                {% include 'header-logo-block' %}
-              </div>
-              <div class="mobile-notifications">
-                {% if section.settings.show_notification_icon %}
-                  <a href="{{ section.settings.notification_link | default: '#' }}" class="site-nav__link">
-                    <div style="position: relative;">
-                      <svg class="icon-bell" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                      </svg>
-                      {% if section.settings.notification_count > 0 %}
-                        <span class="notification-badge">{{ section.settings.notification_count }}</span>
-                      {% endif %}
-                    </div>
-                  </a>
-                {% endif %}
-              </div>
-            </div>
-
-            <!-- Parte 2: Barra de Busca Mobile -->
-            <div class="mobile-search-container large-up--hide">
-              {% if section.settings.header_search_enable %}
-                <a href="{{ routes.search_url }}" class="js-search-header js-no-transition">
-                  <div class="header-search-bar">
-                    {% include 'icon-search' %}
-                    <span class="search-placeholder">{{ section.settings.search_placeholder_text | default: 'Search' }}</span>
+                    {% comment %} Mobile Inverted Logo (hidden on desktop) {% endcomment %}
+                    {% if logo_block.settings.mobile_logo_inverted %}
+                      <img class="logo-mobile-inverted"
+                           src="{{ logo_block.settings.mobile_logo_inverted | img_url: '300x' }}"
+                           alt="{{ shop.name }}"
+                           style="max-width: {{ logo_block.settings.mobile_logo_width | default: 140 }}px;">
+                    {% endif %}
+                  </div>
+                </a>
+              {% else %}
+                <a href="{{ routes.root_url }}" class="site-header__logo-link">
+                  <div class="site-header__logo">
+                    <span>{{ shop.name }}</span>
                   </div>
                 </a>
               {% endif %}
             </div>
 
-            <!-- Parte 3: Menu Mobile em texto -->
-            <div class="mobile-menu-container large-up--hide">
-              <nav class="site-nav">
-                {% for link in main_menu.links %}
-                  <span class="site-nav__item">
-                    <a href="{{ link.url }}" class="site-nav__link">
-                      {{ link.title }}
-                    </a>
-                  </span>
-                {% endfor %}
-              </nav>
+            <div class="header-item header-item--search-center">
+              {% if section.settings.header_search_enable %}
+                <form action="{{ routes.search_url }}" method="get" class="header-search-form" role="search">
+                  <input type="hidden" name="type" value="{{ settings.search_type }}">
+                  <button type="submit" class="header-search-submit">
+                    {% include 'icon-search' %}
+                  </button>
+                  <input
+                    type="search"
+                    name="q"
+                    value="{{ search.terms | escape }}"
+                    placeholder="{{ section.settings.search_placeholder_text | default: 'Search for products...' }}"
+                    class="header-search-input"
+                    autocomplete="off"
+                    aria-label="{{ 'general.search.placeholder' | t }}">
+                 
+                  <!-- Dropdown de sugestões (opcional) -->
+                  <div class="header-search-suggestions" id="search-suggestions">
+                    <!-- Sugestões serão inseridas aqui via JavaScript -->
+                  </div>
+                </form>
+              {% endif %}
+            </div>
+
+            <div class="header-item header-item--icons">         
+              {% include 'header-icons' %}
             </div>
 
           {% elsif logo_alignment == 'left' %}
@@ -586,7 +1451,7 @@
             <div class="header-item header-item--left header-item--navigation">
               {% if section.settings.main_menu_alignment == 'center' or section.settings.main_menu_alignment == 'center-split' %}
                 {% if section.settings.header_search_enable %}
-                  <div class="site-nav medium-down--hide">
+                  <div class="site-nav">
                     <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-search-header js-no-transition">
                       {% include 'icon-search' %}
                       <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
@@ -621,16 +1486,16 @@
           {% endif %}
 
           {% if section.settings.main_menu_alignment != 'left-search-center-menu-below' %}
-            <div class="header-item header-item--icons">          
+            <div class="header-item header-item--icons">         
               {% include 'header-logo-social', block: block, first_instance: true %}
               {% include 'header-icons' %}
             </div>
           {% endif %}
         </div>
 
-        <!-- Menu na linha de baixo para o novo layout -->
+        <!-- Menu na linha de baixo para o novo layout desktop -->
         {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
-          <div class="header-menu-below medium-down--hide">
+          <div class="header-menu-below" id="headerMenuBelow">
             {% include 'header-desktop-nav' %}
           </div>
         {% endif %}
@@ -641,6 +1506,8 @@
           </div>
         {% endif %}
       </div>
+     
+      <!-- Search overlay para outros layouts -->
       <div class="site-header__search-container">
         <div class="site-header__search">
           <div class="page-width">
@@ -661,311 +1528,397 @@
       </div>
     </header>
   </div>
-  
-  <!-- Mobile Bottom Navigation -->
-  {% if section.settings.main_menu_alignment == 'left-search-center-menu-below' %}
-    <nav class="mobile-bottom-nav large-up--hide">
-      <!-- Home -->
-      <div class="mobile-bottom-nav__item">
-        <a href="{{ routes.root_url }}" class="mobile-bottom-nav__link">
-          <span class="mobile-bottom-nav__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          </span>
-          <span>Início</span>
-        </a>
-      </div>
-      
-      <!-- Cart -->
-      <div class="mobile-bottom-nav__item">
-        <a href="{{ routes.cart_url }}" class="mobile-bottom-nav__link js-drawer-open-cart">
-          <span class="mobile-bottom-nav__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            {% if cart.item_count > 0 %}
-              <span class="mobile-bottom-nav__badge">{{ cart.item_count }}</span>
-            {% endif %}
-          </span>
-          <span>Carrinho</span>
-        </a>
-      </div>
-      
-      <!-- Favorites -->
-      <div class="mobile-bottom-nav__item">
-        <a href="{{ section.settings.favorites_link | default: '/pages/favorites' }}" class="mobile-bottom-nav__link">
-          <span class="mobile-bottom-nav__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            {% if section.settings.favorites_count > 0 %}
-              <span class="mobile-bottom-nav__badge">{{ section.settings.favorites_count }}</span>
-            {% endif %}
-          </span>
-          <span>Favoritos</span>
-        </a>
-      </div>
-      
-      <!-- Account -->
-      <div class="mobile-bottom-nav__item">
-        <a href="{{ routes.account_url }}" class="mobile-bottom-nav__link">
-          <span class="mobile-bottom-nav__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          </span>
-          <span>Conta</span>
-        </a>
-      </div>
-      
-      <!-- More (Menu) -->
-      <div class="mobile-bottom-nav__item">
-        <button type="button" class="mobile-bottom-nav__link js-drawer-open-nav" aria-controls="NavDrawer">
-          <span class="mobile-bottom-nav__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </span>
-          <span>Mais</span>
-        </button>
-      </div>
-    </nav>
-  {% endif %}
-  
-  <script>
-    // Adiciona classe ao body quando tem bottom nav mobile
-    if (window.innerWidth < 750) {
-      document.body.classList.add('has-mobile-bottom-nav');
-    }
-  </script>
 </div>
 
-{% schema %}
-  {
-    "name": "Header and menus",
-    "settings": [
-      {
-        "type": "link_list",
-        "id": "main_menu_link_list",
-        "label": "Menu",
-        "default": "main-menu"
-      },
-      {
-        "type": "select",
-        "id": "main_menu_alignment",
-        "label": "Logo alignment",
-        "default": "left",
-        "options": [
-          {
-            "value": "left",
-            "label": "Logo left, menu left"
-          },
-          {
-            "value": "left-center",
-            "label": "Logo left, menu center"
-          },
-          {
-            "value": "left-drawer",
-            "label": "Logo left, menu drawer"
-          },
-          {
-            "value": "left-search-center-menu-below",
-            "label": "Logo left, search center, menu below"
-          },
-          {
-            "value": "center-left",
-            "label": "Logo center, menu left"
-          },
-          {
-            "value": "center",
-            "label": "Logo center, menu below"
-          },
-          {
-            "value": "center-drawer",
-            "label": "Logo center, menu drawer"
-          }
-        ]
-      },
-      {
-        "type": "select",
-        "id": "header_style",
-        "label": "Header style",
-        "default": "normal",
-        "options": [
-          {
-            "value": "normal",
-            "label": "Normal"
-          },
-          {
-            "value": "sticky",
-            "label": "Sticky"
-          }
-        ]
-      },
-      {
-        "type": "checkbox",
-        "id": "sticky_index",
-        "label": "Overlay header over homepage",
-        "default": false
-      },
-      {
-        "type": "checkbox",
-        "id": "sticky_collection",
-        "label": "Overlay header over collection",
-        "info": "(if collection image is enabled)",
-        "default": false
-      },
-      {
-        "type": "checkbox",
-        "id": "header_search_enable",
-        "label": "Show search icon"
-      },
-      {
-        "type": "header",
-        "content": "Search Bar Settings"
-      },
-      {
-        "type": "text",
-        "id": "search_placeholder_text",
-        "label": "Search placeholder text",
-        "default": "Search for products...",
-        "info": "Text shown inside the search bar"
-      },
-      {
-        "type": "header",
-        "content": "Mobile Notifications"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_notification_icon",
-        "label": "Show notification icon (Mobile)",
-        "default": true
-      },
-      {
-        "type": "range",
-        "id": "notification_count",
-        "label": "Notification count",
-        "default": 0,
-        "min": 0,
-        "max": 99,
-        "step": 1,
-        "info": "Number to show on notification badge. Set to 0 to hide badge."
-      },
-      {
-        "type": "url",
-        "id": "notification_link",
-        "label": "Notification link",
-        "info": "Link to notifications page (e.g., /pages/notifications)"
-      },
-      {
-        "type": "header",
-        "content": "Typography"
-      },
-      {
-        "type": "range",
-        "id": "type_navigation_size",
-        "label": "Text size",
-        "default": 18,
-        "min": 12,
-        "max": 40,
-        "unit": "px"
-      },
-      {
-        "type": "checkbox",
-        "id": "type_navigation_style",
-        "label": "Use heading font"
-      },
-      {
-        "type": "header",
-        "content": "Mobile Bottom Navigation"
-      },
-      {
-        "type": "url",
-        "id": "favorites_link",
-        "label": "Favorites page link",
-        "info": "Link to favorites/wishlist page"
-      },
-      {
-        "type": "range",
-        "id": "favorites_count",
-        "label": "Favorites count (demo)",
-        "default": 0,
-        "min": 0,
-        "max": 99,
-        "step": 1,
-        "info": "For demo only. Should be dynamic in production."
-      },
-      {
-        "type": "header",
-        "content": "Announcement bar"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_announcement",
-        "label": "Show an announcement"
-      },
-      {
-        "type": "text",
-        "id": "announcement_text",
-        "label": "Announcement text",
-        "default": "Free shipping and returns",
-        "info": "When closed, the announcement will remain closed until the next visit. Change the text to see it again."
-      },
-      {
-        "type": "url",
-        "id": "announcement_link",
-        "label": "Announcement link"
-      },
-      {
-        "type": "checkbox",
-        "id": "announcement_closable",
-        "label": "Allow users to close announcement"
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const CONFIG = {
+    SCROLL_THRESHOLD: 50,
+    DESKTOP_SCROLL_THRESHOLD: 150,
+    MOBILE_BREAKPOINT: 1024, // <= 1024 => tablet+mobile
+    DEBOUNCE_DELAY: 100,
+    SCROLL_UP_THRESHOLD: 80,
+    SCROLL_DOWN_THRESHOLD: 30,
+    VELOCITY_THRESHOLD: 15
+  };
+
+  let scrollState = {
+    lastScrollY: window.scrollY,
+    isScrolling: false,
+    ticking: false,
+    scrollDirection: 0,
+    scrollAccumulator: 0,
+    lastDirectionChange: 0,
+    isElementHidden: false,
+    scrollVelocity: 0
+  };
+
+  const elements = {
+    mobileSearchBar: document.getElementById('mobileSearchBar'),
+    headerMenuBelow: document.getElementById('headerMenuBelow'),
+    siteHeader: document.querySelector('.site-header'),
+    searchInputs: document.querySelectorAll('.mobile-search-input, .header-search-input')
+  };
+
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  function getWindowWidth() {
+    return window.innerWidth || document.documentElement.clientWidth;
+  }
+
+  /* ---------- mover a barra para o fluxo (só em <= CONFIG.MOBILE_BREAKPOINT) ---------- */
+  function moveMobileSearchBarToFlow() {
+    if (!elements.mobileSearchBar) return;
+    const windowWidth = getWindowWidth();
+    // se já foi movida, ignora
+    if (elements.mobileSearchBar.classList.contains('mobile-in-flow')) return;
+
+    if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+      // coloca a barra logo após o header-wrapper (fora do header fixo)
+      const headerWrapper = document.querySelector('.header-wrapper');
+      if (headerWrapper && headerWrapper.parentNode) {
+        headerWrapper.parentNode.insertBefore(elements.mobileSearchBar, headerWrapper.nextSibling);
+        elements.mobileSearchBar.classList.add('mobile-in-flow');
+      } else {
+        // fallback: coloca no body como primeiro elemento após o header (se header existir)
+        document.body.insertBefore(elements.mobileSearchBar, document.body.firstChild);
+        elements.mobileSearchBar.classList.add('mobile-in-flow');
       }
-    ],
-    "blocks": [
-      {
-        "type": "logo",
-        "name": "Logo",
-        "limit": 1,
-        "settings": [
-          {
-            "type": "image_picker",
-            "id": "logo",
-            "label": "Logo"
-          },
-          {
-            "type": "image_picker",
-            "id": "logo-inverted",
-            "label": "White logo",
-            "info": "Used when on top of an image"
-          },
-          {
-            "type": "range",
-            "id": "desktop_logo_width",
-            "label": "Desktop logo width",
-            "default": 200,
-            "min": 100,
-            "max": 400,
-            "step": 10,
-            "unit": "px"
-          },
-          {
-            "type": "range",
-            "id": "mobile_logo_width",
-            "label": "Mobile logo width",
-            "default": 140,
-            "min": 60,
-            "max": 200,
-            "step": 10,
-            "unit": "px",
-            "info": "Set as a max-width, may appear smaller"
-          }
-        ]
-      }
-    ],
-    "default": {
-      "settings": {}
     }
   }
-{% endschema %}
+
+  /* ---------- toggleMobileSearchBar respeitando se está "in-flow" ---------- */
+  function toggleMobileSearchBar(show) {
+    if (!elements.mobileSearchBar) return;
+
+    // Se foi movida para o fluxo, NÃO usamos o comportamento de "colapsar" via JS - deixamos o scroll natural
+    if (elements.mobileSearchBar.classList.contains('mobile-in-flow')) {
+      // apenas garanta que, quando estiver no topo, a classe visual "search-visible" exista
+      if (show) {
+        elements.mobileSearchBar.classList.remove('search-hidden');
+        elements.mobileSearchBar.classList.add('search-visible');
+        scrollState.isElementHidden = false;
+      } else {
+        // não "esconder" programaticamente em mobile-in-flow; o usuário quer que role por baixo do header
+        // mantemos o estado como escondido (para compatibilidade), mas NÃO alteramos a aparência
+        scrollState.isElementHidden = true;
+      }
+      return;
+    }
+
+    // comportamento original (quando barra está dentro do header)
+    if (show) {
+      elements.mobileSearchBar.classList.remove('search-hidden');
+      elements.mobileSearchBar.classList.add('search-visible');
+      scrollState.isElementHidden = false;
+    } else {
+      elements.mobileSearchBar.classList.remove('search-visible');
+      elements.mobileSearchBar.classList.add('search-hidden');
+      scrollState.isElementHidden = true;
+    }
+  }
+
+  function toggleDesktopMenu(show) {
+    if (!elements.headerMenuBelow) return;
+    if (show) {
+      elements.headerMenuBelow.classList.remove('menu-hidden');
+      elements.headerMenuBelow.classList.add('menu-visible');
+      scrollState.isElementHidden = false;
+    } else {
+      elements.headerMenuBelow.classList.remove('menu-visible');
+      elements.headerMenuBelow.classList.add('menu-hidden');
+      scrollState.isElementHidden = true;
+    }
+  }
+
+  function resetAllVisibility() {
+    // reset visual — para mobile-in-flow apenas garante classe visible
+    toggleMobileSearchBar(true);
+    toggleDesktopMenu(true);
+
+    if (elements.siteHeader) {
+      elements.siteHeader.classList.remove('scrolled-down', 'scrolled-up');
+    }
+
+    scrollState.scrollDirection = 0;
+    scrollState.scrollAccumulator = 0;
+    scrollState.isElementHidden = false;
+  }
+
+  function handleScrollDirection() {
+    const currentScrollY = window.scrollY;
+    const windowWidth = getWindowWidth();
+    const scrollDelta = currentScrollY - scrollState.lastScrollY;
+
+    scrollState.scrollVelocity = Math.abs(scrollDelta);
+
+    // topo -> tudo visível (comportamento que você já tinha)
+    if (currentScrollY <= CONFIG.SCROLL_THRESHOLD) {
+      resetAllVisibility();
+      scrollState.lastScrollY = currentScrollY;
+      scrollState.ticking = false;
+      return;
+    }
+
+    let currentDirection = 0;
+    if (scrollDelta > 0) currentDirection = 1;
+    else if (scrollDelta < 0) currentDirection = -1;
+
+    if (currentDirection !== scrollState.scrollDirection && currentDirection !== 0) {
+      scrollState.scrollDirection = currentDirection;
+      scrollState.scrollAccumulator = Math.abs(scrollDelta);
+      scrollState.lastDirectionChange = currentScrollY;
+    } else if (currentDirection === scrollState.scrollDirection) {
+      scrollState.scrollAccumulator += Math.abs(scrollDelta);
+    }
+
+    // --- comportamento para telas mobile/tablet: não "colapsar" a barra — deixamos rolar por baixo do header ---
+    if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+      // quando rola pra baixo: não executa toggle que remove do fluxo; header continua adicionando .scrolled-down
+      if (scrollState.scrollDirection === 1) {
+        if (elements.siteHeader) {
+          elements.siteHeader.classList.add('scrolled-down');
+          elements.siteHeader.classList.remove('scrolled-up');
+        }
+        // não chamamos toggleMobileSearchBar(false) aqui — deixamos a barra rolar naturalmente
+      }
+
+      // quando rola pra cima: não mostramos a barra até chegar ao topo — ou seja, só o resetAllVisibility (no topo) mostrará
+      if (scrollState.scrollDirection === -1) {
+        // apenas atualiza classes do header visual
+        if (elements.siteHeader) {
+          elements.siteHeader.classList.remove('scrolled-down');
+          elements.siteHeader.classList.add('scrolled-up');
+        }
+      }
+
+      scrollState.lastScrollY = currentScrollY;
+      scrollState.ticking = false;
+      return;
+    }
+
+    // --- comportamento desktop (mantido) ---
+    if (scrollState.scrollDirection === 1 && !scrollState.isElementHidden) {
+      const shouldHide = (
+        scrollState.scrollAccumulator >= CONFIG.SCROLL_DOWN_THRESHOLD ||
+        scrollState.scrollVelocity >= CONFIG.VELOCITY_THRESHOLD
+      ) && currentScrollY > CONFIG.SCROLL_THRESHOLD;
+
+      if (shouldHide) {
+        if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+          toggleMobileSearchBar(false);
+        } else if (currentScrollY > CONFIG.DESKTOP_SCROLL_THRESHOLD) {
+          toggleDesktopMenu(false);
+        }
+
+        if (elements.siteHeader) {
+          elements.siteHeader.classList.add('scrolled-down');
+          elements.siteHeader.classList.remove('scrolled-up');
+        }
+      }
+    }
+
+    if (scrollState.scrollDirection === -1 && scrollState.isElementHidden) {
+      const shouldShow = (
+        scrollState.scrollAccumulator >= CONFIG.SCROLL_UP_THRESHOLD ||
+        (scrollState.scrollVelocity >= CONFIG.VELOCITY_THRESHOLD && scrollState.scrollAccumulator >= CONFIG.SCROLL_DOWN_THRESHOLD)
+      );
+
+      if (shouldShow) {
+        if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+          toggleMobileSearchBar(true);
+        } else {
+          toggleDesktopMenu(true);
+        }
+
+        if (elements.siteHeader) {
+          elements.siteHeader.classList.remove('scrolled-down');
+          elements.siteHeader.classList.add('scrolled-up');
+        }
+      }
+    }
+
+    scrollState.lastScrollY = currentScrollY;
+    scrollState.ticking = false;
+  }
+
+  function requestScrollTick() {
+    if (!scrollState.ticking) {
+      window.requestAnimationFrame(handleScrollDirection);
+      scrollState.ticking = true;
+    }
+  }
+
+  function setupIOSZoomPrevention() {
+    if (!elements.searchInputs.length) return;
+    elements.searchInputs.forEach(function(input) {
+      input.addEventListener('focus', function() {
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          const metaViewport = document.querySelector('meta[name=viewport]');
+          if (metaViewport) {
+            metaViewport.setAttribute(
+              'content',
+              'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+            );
+          }
+        }
+      });
+
+      input.addEventListener('blur', function() {
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          const metaViewport = document.querySelector('meta[name=viewport]');
+          if (metaViewport) {
+            setTimeout(function() {
+              metaViewport.setAttribute(
+                'content',
+                'width=device-width, initial-scale=1'
+              );
+            }, 100);
+          }
+        }
+      });
+    });
+  }
+
+  function calculateHeaderDimensions() {
+    const header = document.querySelector('.site-header');
+    const announcement = document.querySelector('.announcement-bar');
+
+    let headerHeight = 0;
+    let announcementHeight = 0;
+    let totalHeight = 0;
+
+    if (announcement && announcement.offsetHeight > 0 && !announcement.classList.contains('hidden')) {
+      announcementHeight = announcement.offsetHeight;
+      document.documentElement.style.setProperty('--custom-announcement-height', announcementHeight + 'px');
+    } else {
+      document.documentElement.style.setProperty('--custom-announcement-height', '0px');
+    }
+
+    if (header) {
+      headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--custom-header-height', headerHeight + 'px');
+    }
+
+    totalHeight = headerHeight + announcementHeight;
+    document.documentElement.style.setProperty('--custom-header-total-height', totalHeight + 'px');
+
+    // --- important: em mobile/tablet colocamos padding-top no body para que o conteúdo (incl. search em-flow) fique abaixo do header fixo ---
+    const windowWidth = getWindowWidth();
+    if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+      document.body.style.paddingTop = totalHeight + 'px';
+    } else {
+      // remove ajuste para desktop
+      document.body.style.paddingTop = '';
+    }
+
+    window.dispatchEvent(new CustomEvent('headerResized', {
+      detail: { headerHeight, announcementHeight, totalHeight }
+    }));
+  }
+
+  function setupHeaderDimensionTracking() {
+    const debouncedCalculate = debounce(calculateHeaderDimensions, CONFIG.DEBOUNCE_DELAY);
+
+    const observeElements = [
+      document.querySelector('.site-header'),
+      document.querySelector('.announcement-bar')
+    ].filter(Boolean);
+
+    if (observeElements.length > 0) {
+      const observer = new MutationObserver(debouncedCalculate);
+      const config = {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: ['class', 'style']
+      };
+
+      observeElements.forEach(element => {
+        observer.observe(element, config);
+      });
+    }
+
+    window.addEventListener('resize', debouncedCalculate);
+
+    document.querySelectorAll('.site-header img, .announcement-bar img').forEach(img => {
+      if (img.complete) {
+        calculateHeaderDimensions();
+      } else {
+        img.addEventListener('load', calculateHeaderDimensions);
+        img.addEventListener('error', calculateHeaderDimensions);
+      }
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(calculateHeaderDimensions);
+    }
+
+    calculateHeaderDimensions();
+  }
+
+  function handleResize() {
+    // se mudou breakpoint, movemos/restauramos
+    const windowWidth = getWindowWidth();
+    if (windowWidth <= CONFIG.MOBILE_BREAKPOINT) {
+      moveMobileSearchBarToFlow();
+    } else {
+      // se desktop, tentamos recolocar a barra dentro do header (se necessário)
+      // para simplicidade, apenas remove classe in-flow (se quiser, é possível mover de volta)
+      if (elements.mobileSearchBar && elements.mobileSearchBar.classList.contains('mobile-in-flow')) {
+        elements.mobileSearchBar.classList.remove('mobile-in-flow');
+        // opcional: colocar de volta dentro do header (complexo se estrutura do tema mudar) -> deixei como "não mover de volta" para segurança
+      }
+    }
+
+    resetAllVisibility();
+    scrollState.lastScrollY = window.scrollY;
+
+    if (window.scrollY > CONFIG.SCROLL_THRESHOLD) {
+      setTimeout(handleScrollDirection, 50);
+    }
+  }
+
+  function initializeHeader() {
+    resetAllVisibility();
+    setupIOSZoomPrevention();
+    setupHeaderDimensionTracking();
+
+    // mover a barra para o fluxo, somente em tablet/mobile
+    if (getWindowWidth() <= CONFIG.MOBILE_BREAKPOINT) {
+      moveMobileSearchBarToFlow();
+    }
+
+    window.addEventListener('scroll', requestScrollTick, { passive: true });
+    window.addEventListener('resize', debounce(handleResize, 250));
+
+    console.log('Header inicializado com scroll melhorado (mobile in-flow habilitado)');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeHeader);
+  } else {
+    initializeHeader();
+  }
+
+  window.headerControls = {
+    reset: resetAllVisibility,
+    updateHeight: calculateHeaderDimensions,
+    toggleSearch: toggleMobileSearchBar,
+    toggleMenu: toggleDesktopMenu,
+    getScrollState: () => scrollState,
+    updateConfig: (newConfig) => Object.assign(CONFIG, newConfig)
+  };
+});
+</script>
+
