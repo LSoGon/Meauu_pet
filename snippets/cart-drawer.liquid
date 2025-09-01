@@ -1,18 +1,404 @@
-{% if settings.cart_type == 'drawer' %}
-  <div id="CartDrawer" class="drawer drawer--right drawer--has-fixed-footer">
-    <div class="drawer__fixed-header">
-      <div class="drawer__header appear-animation appear-delay-1">
-        <div class="drawer__title">{{ 'cart.general.title' | t }}</div>
-        <div class="drawer__close">
-          <button type="button" class="drawer__close-button js-drawer-close">
-            {% include 'icon-close' %}
-            <span class="icon__fallback-text">{{ 'cart.general.close_cart' | t }}</span>
-          </button>
+<!-- Cart Drawer (Bottom Sheet exclusivo do carrinho) -->
+<div id="CartDrawerSheet" class="cart-drawer-sheet" aria-hidden="true" role="dialog" aria-labelledby="cart-drawer-title">
+  <div class="cart-drawer-sheet__handle" aria-hidden="true">
+    <div class="cart-drawer-sheet__drag"></div>
+  </div>
+
+  <header class="cart-drawer-sheet__header">
+    <h2 id="cart-drawer-title">Sacola</h2>
+    <button type="button" class="cart-drawer-sheet__close js-cart-drawer-close" aria-label="Fechar carrinho">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18L18 6"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="cart-drawer-sheet__content">
+    {% if cart.item_count > 0 %}
+      <ul class="cart-drawer-sheet__items">
+        {% for item in cart.items %}
+          <li class="cart-drawer-sheet__item" data-key="{{ item.key }}">
+            <div class="cart-drawer-sheet__thumb">
+              <img src="{{ item.image | img_url: '100x' }}" alt="{{ item.title }}">
+            </div>
+            <div class="cart-drawer-sheet__meta">
+              <div class="cart-drawer-sheet__title">{{ item.product.title }}</div>
+              <div class="cart-drawer-sheet__variant">{{ item.variant.title }}</div>
+              <div class="cart-drawer-sheet__qty">Qtd: {{ item.quantity }}</div>
+            </div>
+            <div class="cart-drawer-sheet__price">{{ item.final_line_price | money }}</div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="cart-drawer-sheet__footer">
+        <div class="cart-drawer-sheet__subtotal">
+          <span>Subtotal</span>
+          <strong>{{ cart.total_price | money }}</strong>
+        </div>
+        <div class="cart-drawer-sheet__actions">
+          <a href="{{ routes.cart_url }}" class="btn btn--secondary">Ver sacola</a>
+          <a href="/checkout" class="btn btn--primary">Finalizar compra</a>
         </div>
       </div>
-    </div>
-    <div class="drawer__inner">
-      <div id="CartContainer" class="drawer__cart"></div>
-    </div>
+    {% else %}
+      <div class="cart-drawer-sheet__empty">
+        <h3>Você ainda não tem produtos adicionados à sacola.</h3>
+        
+        <div class="cart-drawer-sheet__icon">
+          <!-- Utilizando o mesmo ícone do header -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <!-- Contador posicionado bem junto da sacola, um pouco à direita -->
+          <span class="cart-drawer-sheet__counter">{{ cart.item_count | default: 0 }}</span>
+        </div>
+      
+        <p>Escolha tudo que o seu pet precisa e adicione à sacola para comprar.</p>
+        <button class="btn btn--primary js-cart-drawer-close">Entendi</button>
+      </div>
+    {% endif %}
   </div>
-{% endif %}
+</div>
+
+<!-- Backdrop -->
+<div id="CartDrawerBackdrop" class="cart-drawer-backdrop" aria-hidden="true"></div>
+
+<style>
+/* Estilos específicos para as melhorias do cart drawer */
+
+/* Header do cart drawer */
+.cart-drawer-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 16px; /* Espaçamento entre título e botão */
+  min-height: 60px; /* Altura mínima para evitar quebras */
+}
+
+/* Título da sacola */
+.cart-drawer-sheet__header h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+  color: #333;
+  flex: 1; /* Ocupa o espaço disponível */
+  white-space: nowrap; /* Evita quebra de linha */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adiciona reticências se necessário */
+}
+
+/* Botão de fechar maior e mesma cor do h2 */
+.cart-drawer-sheet__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* Impede que o botão encolha */
+  width: 40px; /* Largura fixa */
+  height: 40px; /* Altura fixa */
+}
+
+.cart-drawer-sheet__close svg {
+  width: 24px !important;
+  height: 24px !important;
+  stroke: #333 !important; /* Mesma cor do texto h2 */
+  color: #333 !important;
+}
+
+.cart-drawer-sheet__close:hover {
+  background-color: #f5f5f5;
+}
+
+.cart-drawer-sheet__close:hover svg {
+  stroke: #000 !important;
+}
+
+/* Maior espaçamento para o ícone da sacola */
+.cart-drawer-sheet__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0 30px 0; /* Aumentado de margin padrão */
+}
+
+.cart-drawer-sheet__icon svg {
+  width: 56px;
+  height: 56px;
+  stroke: #666;
+  color: #666;
+}
+
+/* Base styles para mobile (até 767px) */
+.cart-drawer-sheet__counter {
+  position: absolute;
+  top: -5px;
+  right: 0; /* Perfeito para mobile */
+  background: var(--color-accent, #EC660C);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 4px 7px;
+  border-radius: 50%;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* ========================================
+   CONTADOR RESPONSIVO PARA TODAS AS TELAS
+   ======================================== */
+
+/* Base styles para mobile (até 480px) */
+@media only screen and (max-width: 480px) {
+  .cart-drawer-sheet__icon svg {
+    width: 52px;
+    height: 52px;
+  }
+  
+  /* Botão ocupando quase toda largura em mobile pequeno */
+  .cart-drawer-sheet__empty .btn--primary {
+    padding: 14px 16px !important;
+    font-size: 15px !important;
+    margin: 20px 15px 0 15px !important; /* Margens menores em mobile pequeno */
+    width: calc(100% - 30px) !important; /* Largura total menos margens de 15px cada lado */
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .cart-drawer-sheet__counter {
+    right: 0; /* Ajuste para tablet */
+    top: -6px;
+    font-size: 16px;
+    min-width: 26px;
+    height: 26px;
+  }
+  
+  .cart-drawer-sheet__icon {
+    margin: 45px 0 35px 0;
+  }
+  
+  .cart-drawer-sheet__icon svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-drawer-sheet__empty .btn--primary {
+    padding: 18px 50px;
+    min-width: 220px;
+    font-size: 17px;
+  }
+  
+  .cart-drawer-sheet__empty {
+    padding: 40px 30px;
+  }
+}
+
+/* Desktop (acima de 1024px) */
+@media only screen and (min-width: 1025px) {
+  .cart-drawer-sheet__counter {
+    right: 0; /* Ajuste para desktop */
+    top: -8px;
+    font-size: 17px;
+    min-width: 28px;
+    height: 28px;
+    padding: 5px 8px;
+  }
+  
+  .cart-drawer-sheet__icon {
+    margin: 50px 0 40px 0;
+  }
+  
+  .cart-drawer-sheet__icon svg {
+    width: 64px;
+    height: 64px;
+  }
+  
+  /* Ajustes específicos do header para desktop */
+  .cart-drawer-sheet__header {
+    padding: 20px 24px; /* Mais espaço em desktop */
+    min-height: 70px; /* Altura maior para desktop */
+    gap: 24px; /* Mais espaçamento entre elementos */
+  }
+  
+  .cart-drawer-sheet__header h2 {
+    font-size: 20px; /* Título maior em desktop */
+  }
+  
+  .cart-drawer-sheet__close {
+    width: 44px; /* Botão ligeiramente maior em desktop */
+    height: 44px;
+    padding: 10px;
+  }
+  
+  .cart-drawer-sheet__close svg {
+    width: 26px !important; /* Ícone ligeiramente maior */
+    height: 26px !important;
+  }
+
+  .cart-drawer-sheet__empty .btn--primary {
+    padding: 20px 60px;
+    min-width: 250px;
+    font-size: 18px;
+    margin-top: 30px;
+  }
+  
+  .cart-drawer-sheet__empty {
+    padding: 50px 40px;
+  }
+  
+  .cart-drawer-sheet__empty p {
+    margin-bottom: 50px; /* Ainda mais espaço em desktop */
+  }
+}
+
+/* Desktop grande (acima de 1440px) */
+@media only screen and (min-width: 1441px) {
+  .cart-drawer-sheet__counter {
+    right: 0; /* Ajuste para telas muito grandes */
+    top: -10px;
+    font-size: 18px;
+    min-width: 30px;
+    height: 30px;
+  }
+}
+
+/* ========================================
+   AJUSTES GERAIS DO EMPTY STATE
+   ======================================== */
+
+.cart-drawer-sheet__empty {
+  text-align: center;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza horizontalmente */
+  justify-content: center; /* Centraliza verticalmente se necessário */
+}
+
+.cart-drawer-sheet__empty h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.cart-drawer-sheet__empty p {
+  color: #666;
+  margin-bottom: 40px; /* Aumentado para mais espaço antes do botão */
+  line-height: 1.5;
+}
+
+/* Botão Entendi customizado - LARGURA QUASE TOTAL DA TELA */
+.cart-drawer-sheet__empty .btn--primary,
+.cart-drawer-sheet__empty .btn.btn--primary,
+.cart-drawer-sheet__empty button.btn--primary,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary {
+  margin: 25px 20px 0 20px !important; /* Espaços pequenos nas laterais */
+  padding: 16px 20px !important; /* Padding interno ajustado */
+  border-radius: 25px !important; /* Cantos bem arredondados */
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  width: calc(100% - 40px) !important; /* Largura total menos as margens laterais */
+  max-width: none !important; /* Remove limite de largura */
+  min-width: auto !important; /* Remove largura mínima */
+  border: none !important;
+  background-color: var(--color-accent, #EC660C) !important;
+  color: white !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important; /* Apenas transição de cor */
+  text-decoration: none !important;
+  display: block !important; /* Block para ocupar largura total */
+  position: relative !important;
+  overflow: hidden !important; /* Esconde qualquer pseudo-elemento que possa vazar */
+  text-align: center !important; /* Centraliza o texto dentro do botão */
+  box-sizing: border-box !important; /* Inclui padding e border no cálculo da largura */
+}
+
+/* FORÇA REMOÇÃO DE QUALQUER SETA/ARROW - TODOS OS PSEUDO-ELEMENTOS */
+.cart-drawer-sheet__empty .btn--primary::before,
+.cart-drawer-sheet__empty .btn--primary::after,
+.cart-drawer-sheet__empty .btn.btn--primary::before,
+.cart-drawer-sheet__empty .btn.btn--primary::after,
+.cart-drawer-sheet__empty button.btn--primary::before,
+.cart-drawer-sheet__empty button.btn--primary::after,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary::before,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* Hover sem seta - apenas mudança de cor - SOBRESCREVE TUDO */
+.cart-drawer-sheet__empty .btn--primary:hover,
+.cart-drawer-sheet__empty .btn.btn--primary:hover,
+.cart-drawer-sheet__empty button.btn--primary:hover,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary:hover {
+  background-color: #d45a0a !important; /* Tom mais escuro no hover */
+  transform: none !important; /* Remove qualquer transformação */
+  transition: background-color 0.3s ease !important; /* Apenas transição de cor */
+}
+
+/* FORÇA REMOÇÃO DE SETAS NO HOVER TAMBÉM */
+.cart-drawer-sheet__empty .btn--primary:hover::before,
+.cart-drawer-sheet__empty .btn--primary:hover::after,
+.cart-drawer-sheet__empty .btn.btn--primary:hover::before,
+.cart-drawer-sheet__empty .btn.btn--primary:hover::after,
+.cart-drawer-sheet__empty button.btn--primary:hover::before,
+.cart-drawer-sheet__empty button.btn--primary:hover::after,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary:hover::before,
+.cart-drawer-sheet__empty .js-cart-drawer-close.btn--primary:hover::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transform: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Remove animações globais que possam estar sendo aplicadas */
+.cart-drawer-sheet__empty .btn--primary *,
+.cart-drawer-sheet__empty .btn--primary *::before,
+.cart-drawer-sheet__empty .btn--primary *::after {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* SOBRESCREVE qualquer estilo de seta que possa vir do tema global */
+.cart-drawer-sheet__empty .btn--primary {
+  background-image: none !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove efeitos de transform que possam criar setas */
+.cart-drawer-sheet__empty .btn--primary:active,
+.cart-drawer-sheet__empty .btn--primary:focus,
+.cart-drawer-sheet__empty .btn--primary:focus-visible {
+  transform: none !important;
+  box-shadow: 0 0 0 2px rgba(236, 102, 12, 0.3) !important; /* Focus outline personalizado */
+  outline: none !important;
+}
+
+</style>

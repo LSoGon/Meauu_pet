@@ -3,19 +3,102 @@
     {% include 'currency-picker', picker_id: 'header', currency_class: 'currency-picker--header medium-down--hide' %}
   {% endif %}
   <div class="site-nav__icons">
-    {% if shop.customer_accounts_enabled %}
-      <a class="site-nav__link site-nav__link--icon medium-down--hide" href="{{ routes.account_url }}">
+    <a href="{{ routes.cart_url }}" class="site-nav__link site-nav__link--icon js-drawer-open-cart js-no-transition" aria-controls="CartDrawer">
+      <span class="cart-link">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
-        <span class="icon__fallback-text">
-          {% if customer %}
-            {{ 'layout.customer.account' | t }}
-          {% else %}
-            {{ 'layout.customer.log_in' | t }}
-          {% endif %}
-        </span>
-      </a>
+        <span class="icon__fallback-text">{{ 'layout.cart.title' | t }}</span>
+        <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
+      </span>
+    </a>
+    {% if shop.customer_accounts_enabled %}
+      {% if customer %}
+        <!-- Usuario logado - mostrar nome com dropdown -->
+        <div class="site-nav__item site-nav--has-dropdown site-nav--account-dropdown medium-down--hide">
+          <a class="site-nav__link site-nav__account-link" href="#" aria-expanded="false" aria-haspopup="true">
+            <span class="account-name">Olá, {{ customer.first_name | default: customer.name }}</span>
+            <div class="site-nav__account-chevron">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </a>
+          
+          <!-- Dropdown da conta -->
+          <ul class="site-nav__dropdown site-nav__account-dropdown-menu">
+            <li>
+              <a href="/pages/favoritos" class="site-nav__dropdown-link">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M20.84 4.61A5.5 5.5 0 0 0 16 2.5C15 2.5 14 2.9 13.13 3.78L12 4.95L10.87 3.78C9.99 2.89 8.99 2.5 8 2.5A5.5 5.5 0 0 0 3.16 4.61C2.75 5.05 2.75 5.75 3.16 6.19L12 15.03L20.84 6.19C21.25 5.75 21.25 5.05 20.84 4.61Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                Favoritos
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.account_url }}" class="site-nav__dropdown-link">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M16 7A4 4 0 1 1 8 7A4 4 0 0 1 16 7ZM12 14A7 7 0 0 0 5 21H19A7 7 0 0 0 12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                Meus dados
+              </a>
+            </li>
+            <li>
+              <a href="{{ routes.account_addresses_url }}" class="site-nav__dropdown-link">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 10C21 17 12 23 12 23S3 17 3 10A9 9 0 0 1 12 1A9 9 0 0 1 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </div>
+                Meus endereços
+              </a>
+            </li>
+            <li>
+              <a href="/pages/atendimento" class="site-nav__dropdown-link">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M22 16.92V19A2 2 0 0 1 20.11 21A19.79 19.79 0 0 1 8.5 9A19.5 19.5 0 0 1 6 1.89A2 2 0 0 1 8.09 2H11.16A2 2 0 0 1 13.16 4L13.66 7A2 2 0 0 1 12.19 9.19L11 10.19A16 16 0 0 0 13.81 13L14.81 11.81A2 2 0 0 1 17 11.31L19.94 11.81A2 2 0 0 1 22 13.81V16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                Atendimento
+              </a>
+            </li>
+            <li>
+              <a href="/pages/indique-e-ganhe" class="site-nav__dropdown-link">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M17 21V19A4 4 0 0 0 13 15H5A4 4 0 0 0 1 19V21M23 21V19A4 4 0 0 0 20.96 16.5M16 3.13A4 4 0 0 1 16 7.87M9 11A4 4 0 1 0 9 3A4 4 0 0 0 9 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                Indique e ganhe
+              </a>
+            </li>
+            <li class="dropdown-divider">
+              <a href="{{ routes.account_logout_url }}" class="site-nav__dropdown-link site-nav__dropdown-link--logout">
+                <div class="dropdown-link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H9M16 17L21 12L16 7M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                Sair
+              </a>
+            </li>
+          </ul>
+        </div>
+      {% else %}
+        <!-- Usuario não logado - mostrar ícone normal -->
+        <a class="site-nav__link site-nav__link--icon medium-down--hide" href="{{ routes.account_url }}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="icon__fallback-text">{{ 'layout.customer.log_in' | t }}</span>
+        </a>
+      {% endif %}
     {% endif %}
 
     {% if section.settings.header_search_enable %}
@@ -34,15 +117,353 @@
         <span class="icon__fallback-text">{{ 'general.drawers.navigation' | t }}</span>
       </button>
     {% endif %}
-
-    <a href="{{ routes.cart_url }}" class="site-nav__link site-nav__link--icon js-drawer-open-cart js-no-transition" aria-controls="CartDrawer">
-      <span class="cart-link">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-        <span class="icon__fallback-text">{{ 'layout.cart.title' | t }}</span>
-        <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
-      </span>
-    </a>
   </div>
 </div>
+
+<style>
+/* ========================================
+   ESTILOS PARA DROPDOWN DA CONTA (DESKTOP)
+   ======================================== */
+
+.site-nav--account-dropdown {
+  position: relative;
+}
+
+.site-nav__account-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--color-text, #333) !important;
+  text-decoration: none !important;
+}
+
+.site-nav__account-link:hover {
+  background-color: rgba(216, 68, 42, 0.05) !important;
+  border-color: rgba(216, 68, 42, 0.2) !important;
+  color: var(--menu-hover-color, #D8442A) !important;
+}
+
+.account-name {
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  white-space: nowrap !important;
+  max-width: 120px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.site-nav__account-chevron {
+  width: 12px !important;
+  height: 12px !important;
+  color: #999 !important;
+  transition: transform 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.site-nav--account-dropdown:hover .site-nav__account-chevron,
+.site-nav--account-dropdown.is-focused .site-nav__account-chevron {
+  transform: rotate(180deg) !important;
+  color: var(--menu-hover-color, #D8442A) !important;
+}
+
+/* Dropdown Menu */
+.site-nav__account-dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: auto !important;
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  z-index: 1001 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) !important;
+  transition: all 0.3s ease !important;
+  min-width: 220px !important;
+  max-width: 280px !important;
+  padding: 8px 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.site-nav--account-dropdown:hover .site-nav__account-dropdown-menu,
+.site-nav--account-dropdown.is-focused .site-nav__account-dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.site-nav__account-dropdown-menu li {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.site-nav__account-dropdown-menu .site-nav__dropdown-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  color: #333 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+  font-size: 15px !important;
+  line-height: 1.4 !important;
+}
+
+.site-nav__account-dropdown-menu .site-nav__dropdown-link:hover {
+  background-color: var(--menu-hover-bg, #D8442A) !important;
+  color: white !important;
+  transform: translateX(2px) !important;
+}
+
+.dropdown-link-icon {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: inherit !important;
+}
+
+.dropdown-link-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+}
+
+/* Divider for logout */
+.dropdown-divider {
+  border-top: 1px solid #f0f0f0 !important;
+  margin: 8px 0 4px 0 !important;
+  padding-top: 4px !important;
+}
+
+.site-nav__dropdown-link--logout {
+  color: #dc3545 !important;
+}
+
+.site-nav__dropdown-link--logout:hover {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+/* Area de transição invisível para melhor UX */
+.site-nav--account-dropdown::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 12px !important;
+  background: transparent !important;
+  z-index: 1000 !important;
+}
+
+/* Responsive - esconder dropdown em mobile/tablet */
+@media (max-width: 1024px) {
+  .site-nav--account-dropdown {
+    display: none !important;
+  }
+}
+
+/* Prevent dropdown from going outside viewport */
+@media (min-width: 1025px) {
+  .site-nav--account-dropdown:last-child .site-nav__account-dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
+  }
+  
+  .site-nav--account-dropdown:first-child .site-nav__account-dropdown-menu {
+    left: 0 !important;
+    right: auto !important;
+  }
+}
+
+/* Animation timing for better UX */
+.site-nav--account-dropdown:hover .site-nav__account-dropdown-menu,
+.site-nav--account-dropdown.is-focused .site-nav__account-dropdown-menu {
+  transition-delay: 0.1s !important;
+}
+
+.site-nav--account-dropdown:not(:hover) .site-nav__account-dropdown-menu {
+  transition-delay: 0.3s !important;
+}
+
+/* Focus states for accessibility */
+.site-nav__account-link:focus {
+  outline: 2px solid var(--menu-hover-color, #D8442A) !important;
+  outline-offset: 2px !important;
+}
+
+.site-nav__dropdown-link:focus {
+  outline: 2px solid var(--menu-hover-color, #D8442A) !important;
+  outline-offset: -2px !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // ============================================
+  // FUNCIONALIDADE DO DROPDOWN DA CONTA (DESKTOP)
+  // ============================================
+  
+  const accountDropdown = document.querySelector('.site-nav--account-dropdown');
+  const accountLink = document.querySelector('.site-nav__account-link');
+  const accountMenu = document.querySelector('.site-nav__account-dropdown-menu');
+  
+  if (accountDropdown && accountLink && accountMenu) {
+    let isOpen = false;
+    let hoverTimeout;
+    let focusTimeout;
+    
+    function openDropdown() {
+      if (isOpen) return;
+      
+      isOpen = true;
+      accountDropdown.classList.add('is-focused');
+      accountLink.setAttribute('aria-expanded', 'true');
+      
+      // Focus no primeiro item do menu
+      const firstLink = accountMenu.querySelector('.site-nav__dropdown-link');
+      if (firstLink) {
+        setTimeout(() => firstLink.focus(), 100);
+      }
+    }
+    
+    function closeDropdown() {
+      if (!isOpen) return;
+      
+      isOpen = false;
+      accountDropdown.classList.remove('is-focused');
+      accountLink.setAttribute('aria-expanded', 'false');
+    }
+    
+    // Mouse events
+    accountDropdown.addEventListener('mouseenter', function() {
+      clearTimeout(hoverTimeout);
+      openDropdown();
+    });
+    
+    accountDropdown.addEventListener('mouseleave', function() {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(() => {
+        closeDropdown();
+      }, 300);
+    });
+    
+    // Keyboard navigation
+    accountLink.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        openDropdown();
+      }
+      
+      if (e.key === 'Escape') {
+        closeDropdown();
+        accountLink.focus();
+      }
+    });
+    
+    // Navigation within dropdown
+    accountMenu.addEventListener('keydown', function(e) {
+      const menuLinks = Array.from(accountMenu.querySelectorAll('.site-nav__dropdown-link'));
+      const currentIndex = menuLinks.indexOf(document.activeElement);
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % menuLinks.length;
+        menuLinks[nextIndex].focus();
+      }
+      
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = currentIndex === 0 ? menuLinks.length - 1 : currentIndex - 1;
+        menuLinks[prevIndex].focus();
+      }
+      
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDropdown();
+        accountLink.focus();
+      }
+      
+      if (e.key === 'Tab' && !e.shiftKey && currentIndex === menuLinks.length - 1) {
+        closeDropdown();
+      }
+      
+      if (e.key === 'Tab' && e.shiftKey && currentIndex === 0) {
+        closeDropdown();
+      }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!accountDropdown.contains(e.target)) {
+        closeDropdown();
+      }
+    });
+    
+    // Focus management
+    document.addEventListener('focusin', function(e) {
+      if (accountDropdown.contains(e.target)) {
+        clearTimeout(focusTimeout);
+      } else {
+        focusTimeout = setTimeout(() => {
+          closeDropdown();
+        }, 100);
+      }
+    });
+    
+    // Analytics tracking (if available)
+    if (window.theme && theme.analytics) {
+      accountMenu.addEventListener('click', function(e) {
+        const link = e.target.closest('.site-nav__dropdown-link');
+        if (link && typeof theme.analytics.track === 'function') {
+          theme.analytics.track('Account Dropdown Click', {
+            link_text: link.textContent.trim(),
+            link_url: link.href
+          });
+        }
+      });
+    }
+  }
+  
+  // ============================================
+  // MELHORIAS GERAIS DE UX
+  // ============================================
+  
+  // Smooth scrolling para links internos
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+  
+  // Preload hover states for better performance
+  if (window.matchMedia('(min-width: 1025px)').matches) {
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'style';
+    preloadLink.onload = function() {
+      this.onload = null;
+      this.rel = 'stylesheet';
+    };
+    document.head.appendChild(preloadLink);
+  }
+});
+</script>

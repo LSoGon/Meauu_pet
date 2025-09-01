@@ -4,14 +4,31 @@
 <div id="NavDrawer" class="drawer drawer--{{ drawer_position }} drawer--redesigned drawer--fullscreen">
   <div class="drawer__fixed-header">
     <div class="drawer__header appear-animation appear-delay-{{ animation_row }}">
-      <!-- Novo cabeçalho redesigned -->
-      <div class="drawer__user-greeting">
-        <h3 class="drawer__greeting-title">Olá, Amigão</h3>
-        <p class="drawer__greeting-subtitle">Já possui conta ou gostaria de se cadastrar?</p>
-      </div>
-      <div class="drawer__login-button">
+      <!-- Cabeçalho Principal (sempre visível inicialmente) -->
+      <div class="drawer__user-greeting" id="drawerMainHeader">
         {% if customer %}
-          <a href="{{ routes.account_url }}" class="btn btn--login-custom">Conta</a>
+          <h3 class="drawer__greeting-title">Olá, {{ customer.first_name | default: customer.name }}</h3>
+          <p class="drawer__greeting-subtitle">Bem-vindo de volta!</p>
+        {% else %}
+          <h3 class="drawer__greeting-title">Olá, Amigão</h3>
+          <p class="drawer__greeting-subtitle">Já possui conta ou gostaria de se cadastrar?</p>
+        {% endif %}
+      </div>
+      
+      <!-- Cabeçalho da Seção Minha Conta (inicialmente oculto) -->
+      <div class="drawer__account-header" id="drawerAccountHeader" style="display: none;">
+        <button type="button" class="drawer__back-button" id="drawerBackButton">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h3 class="drawer__account-title">Minha Conta</h3>
+      </div>
+      
+      <!-- Botão de Login/Conta (sempre presente no header) -->
+      <div class="drawer__login-button" id="drawerLoginButton">
+        {% if customer %}
+          <a href="#" class="btn btn--login-custom" id="accountButton">Sua Conta</a>
         {% else %}
           <a href="{{ routes.account_login_url }}" class="btn btn--login-custom">Entrar</a>
         {% endif %}
@@ -20,7 +37,8 @@
   </div>
 
   <div class="drawer__inner">
-    <nav class="mobile-nav-redesigned" role="navigation" aria-label="Primary">
+    <!-- Navegação Principal -->
+    <nav class="mobile-nav-redesigned" id="mainNavigation" role="navigation" aria-label="Primary">
      
       <!-- Seção: Cachorro -->
       {%- assign animation_row = animation_row | plus: 1 -%}
@@ -261,6 +279,110 @@
        </a>
       </div>
     </nav>
+
+    <!-- Navegação da Seção Minha Conta -->
+    <nav class="mobile-nav-account" id="accountNavigation" style="display: none;" role="navigation" aria-label="Account">
+      <div class="mobile-nav__account-section">
+        <ul class="mobile-nav__account-list">
+          <li class="mobile-nav__account-item">
+            <a href="/pages/favoritos" class="mobile-nav__account-link">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20.84 4.61A5.5 5.5 0 0 0 16 2.5C15 2.5 14 2.9 13.13 3.78L12 4.95L10.87 3.78C9.99 2.89 8.99 2.5 8 2.5A5.5 5.5 0 0 0 3.16 4.61C2.75 5.05 2.75 5.75 3.16 6.19L12 15.03L20.84 6.19C21.25 5.75 21.25 5.05 20.84 4.61Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Favoritos</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          
+          <li class="mobile-nav__account-item">
+            <a href="{{ routes.account_url }}" class="mobile-nav__account-link">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M16 7A4 4 0 1 1 8 7A4 4 0 0 1 16 7ZM12 14A7 7 0 0 0 5 21H19A7 7 0 0 0 12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Meus dados</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          
+          <li class="mobile-nav__account-item">
+            <a href="{{ routes.account_addresses_url }}" class="mobile-nav__account-link">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 10C21 17 12 23 12 23S3 17 3 10A9 9 0 0 1 12 1A9 9 0 0 1 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Meus endereços</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          
+          <li class="mobile-nav__account-item">
+            <a href="/pages/atendimento" class="mobile-nav__account-link">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 16.92V19A2 2 0 0 1 20.11 21A19.79 19.79 0 0 1 8.5 9A19.5 19.5 0 0 1 6 1.89A2 2 0 0 1 8.09 2H11.16A2 2 0 0 1 13.16 4L13.66 7A2 2 0 0 1 12.19 9.19L11 10.19A16 16 0 0 0 13.81 13L14.81 11.81A2 2 0 0 1 17 11.31L19.94 11.81A2 2 0 0 1 22 13.81V16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Atendimento</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          
+          <li class="mobile-nav__account-item">
+            <a href="/pages/indique-e-ganhe" class="mobile-nav__account-link">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M17 21V19A4 4 0 0 0 13 15H5A4 4 0 0 0 1 19V21M23 21V19A4 4 0 0 0 20.96 16.5M16 3.13A4 4 0 0 1 16 7.87M9 11A4 4 0 1 0 9 3A4 4 0 0 0 9 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Indique e ganhe</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+          
+          <li class="mobile-nav__account-item mobile-nav__account-item--logout">
+            <a href="{{ routes.account_logout_url }}" class="mobile-nav__account-link mobile-nav__account-link--logout">
+              <div class="mobile-nav__account-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H9M16 17L21 12L16 7M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="mobile-nav__account-text">Sair</span>
+              <div class="mobile-nav__account-chevron">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
 
   <!-- Botão de fechar redesigned -->
@@ -425,6 +547,59 @@ body.js-drawer-open {
   display: flex !important;
   align-items: flex-start !important;
   justify-content: flex-end !important;
+}
+
+/* Cabeçalho da seção Minha Conta - inicialmente oculto */
+.drawer__account-header {
+  display: none !important; /* Força hidden inicialmente */
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 1 !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+}
+
+/* Quando ativo, sobrescrever o display e ocupar toda a largura */
+.drawer__account-header.active {
+  display: flex !important;
+  width: 100% !important;
+}
+
+/* Quando na seção conta, o header ocupa toda a área */
+.drawer__header.account-mode {
+  justify-content: flex-start !important;
+}
+
+.drawer__header.account-mode .drawer__account-header {
+  flex: 1 !important;
+  width: 100% !important;
+}
+
+.drawer__back-button {
+  background: none !important;
+  border: none !important;
+  padding: 8px !important;
+  cursor: pointer !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--drawer-button) !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.drawer__back-button:hover {
+  background-color: rgba(216, 68, 42, 0.1) !important;
+}
+
+.drawer__account-title {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: var(--drawer-text) !important;
+  margin: 0 !important;
+  flex: 1 !important;
 }
 
 /* Botão de login personalizado */
@@ -614,6 +789,99 @@ body.js-drawer-open {
   justify-content: center;
 }
 
+/* ========================================
+   ESTILOS DA SEÇÃO MINHA CONTA
+   ======================================== */
+
+.mobile-nav-account {
+  padding: 0;
+}
+
+.mobile-nav__account-section {
+  margin-top: 45px;
+}
+
+.mobile-nav__account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav__account-item {
+  margin: 0;
+  border-bottom: 1px solid var(--drawer-border);
+}
+
+.mobile-nav__account-item:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav__account-link {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--drawer-text);
+  transition: background-color 0.2s ease;
+  min-height: 60px;
+  box-sizing: border-box;
+}
+
+.mobile-nav__account-link:active {
+  background-color: #fff0ee;
+}
+
+.mobile-nav__account-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--drawer-button);
+}
+
+.mobile-nav__account-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+}
+
+.mobile-nav__account-text {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--drawer-text);
+  line-height: 1.4;
+}
+
+.mobile-nav__account-chevron {
+  width: 16px;
+  height: 16px;
+  color: #999;
+  flex-shrink: 0;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo especial para o item de logout */
+.mobile-nav__account-item--logout {
+  margin-top: 20px;
+  border-top: 1px solid var(--drawer-border);
+  border-bottom: none;
+}
+
+.mobile-nav__account-link--logout .mobile-nav__account-text {
+  color: #dc3545;
+}
+
+.mobile-nav__account-link--logout .mobile-nav__account-icon {
+  color: #dc3545;
+}
+
 /* Botão flutuante de fechar */
 .drawer__close-button-redesigned {
   position: fixed;
@@ -748,6 +1016,11 @@ body.js-drawer-open {
     min-height: 52px;
   }
 
+  .mobile-nav__account-link {
+    padding: 14px 16px;
+    min-height: 52px;
+  }
+
   .drawer__close-button-redesigned {
     width: 52px;
     height: 52px;
@@ -847,6 +1120,55 @@ body.js-drawer-open {
 .appear-delay-19 { animation-delay: 0.95s; }
 .appear-delay-20 { animation-delay: 1.00s; }
 
+/* ====== Conta: apenas seta (esquerda) + título centralizado ====== */
+.drawer__header.account-mode {
+  justify-content: center !important;
+  align-items: center !important;
+  position: relative !important;
+  padding: 12px 48px !important; /* dá espaço para o botão absoluto */
+}
+
+/* garantir que o container de account ocupe e centralize o título */
+.drawer__header.account-mode .drawer__account-header {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+/* botão voltar fica absoluto à esquerda, verticalmente centralizado */
+.drawer__header.account-mode .drawer__back-button {
+  position: absolute !important;
+  left: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  z-index: 1001 !important;
+}
+
+/* título centralizado visualmente */
+.drawer__header.account-mode .drawer__account-title {
+  margin: 0 auto !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+/* esconder todos os outros elementos do header quando em account-mode */
+.drawer__header.account-mode .drawer__user-greeting,
+.drawer__header.account-mode .drawer__login-button {
+  display: none !important;
+}
+
+/* opcional: garantir que o botão de fechar fique escondido visualmente quando em account-mode.
+   o botão de fechar tem posição fixa; o selector abaixo esconde-o enquanto o header tem a classe. */
+.drawer__close-button-redesigned[aria-hidden="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 </style>
 
 <script>
@@ -872,8 +1194,131 @@ document.addEventListener('DOMContentLoaded', function() {
     drawerTriggers: document.querySelectorAll('[data-drawer-trigger]'),
     drawerCloseButtons: document.querySelectorAll('.js-drawer-close'),
     body: document.body,
-    overlay: null
+    overlay: null,
+    // Elementos da funcionalidade de conta
+    mainHeader: document.getElementById('drawerMainHeader'),
+    accountHeader: document.getElementById('drawerAccountHeader'),
+    mainNavigation: document.getElementById('mainNavigation'),
+    accountNavigation: document.getElementById('accountNavigation'),
+    accountButton: document.getElementById('accountButton'),
+    backButton: document.getElementById('drawerBackButton')
   };
+
+  // ============================================
+  // FUNCIONALIDADE DA SEÇÃO MINHA CONTA
+  // ============================================
+  
+  function showAccountSection() {
+    if (!elements.mainHeader || !elements.accountHeader || !elements.mainNavigation || !elements.accountNavigation) {
+      return;
+    }
+
+    // Acessibilidade e ocultar elementos secundários
+    const loginButton = document.getElementById('drawerLoginButton');
+    const closeButton = document.querySelector('.drawer__close-button-redesigned');
+
+    // 1) esconder/atribuir aria-hidden
+    elements.mainHeader.style.display = 'none';
+    elements.mainHeader.setAttribute('aria-hidden', 'true');
+
+    elements.mainNavigation.style.display = 'none';
+    elements.mainNavigation.setAttribute('aria-hidden', 'true');
+
+    if (loginButton) {
+      loginButton.style.display = 'none';
+      loginButton.setAttribute('aria-hidden', 'true');
+    }
+
+    // Esconder botão de fechar acessível
+    if (closeButton) {
+      closeButton.style.display = 'none';
+      closeButton.setAttribute('aria-hidden', 'true');
+    }
+
+    // 2) ativar modo account no header (CSS fará o resto: centra o título, posiciona a seta)
+    const drawerHeader = document.querySelector('.drawer__header');
+    if (drawerHeader) {
+      drawerHeader.classList.add('account-mode');
+    }
+
+    // 3) mostrar apenas o header da conta (seta + texto)
+    elements.accountHeader.style.display = 'flex';
+    elements.accountHeader.classList.add('active');
+    elements.accountHeader.setAttribute('aria-hidden', 'false');
+
+    // 4) mostrar a navegação da conta
+    elements.accountNavigation.style.display = 'block';
+    elements.accountNavigation.setAttribute('aria-hidden', 'false');
+
+    // 5) animação dos itens da conta (opcional, mantive)
+    const accountItems = elements.accountNavigation.querySelectorAll('.mobile-nav__account-item');
+    accountItems.forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      setTimeout(() => {
+        item.style.transition = 'opacity 0.28s ease, transform 0.28s ease';
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+      }, index * 45);
+    });
+
+    // 6) foco: levar foco acessível para botão voltar
+    if (elements.backButton) {
+      elements.backButton.focus({ preventScroll: true });
+    }
+
+    // atualiza dimensões porque header mudou
+    updateDrawerDimensions();
+  }
+
+  function showMainSection() {
+    if (!elements.mainHeader || !elements.accountHeader || !elements.mainNavigation || !elements.accountNavigation) {
+      return;
+    }
+
+    const loginButton = document.getElementById('drawerLoginButton');
+    const closeButton = document.querySelector('.drawer__close-button-redesigned');
+
+    // 1) esconder header da conta e navegação da conta
+    elements.accountHeader.style.display = 'none';
+    elements.accountHeader.classList.remove('active');
+    elements.accountHeader.setAttribute('aria-hidden', 'true');
+
+    elements.accountNavigation.style.display = 'none';
+    elements.accountNavigation.setAttribute('aria-hidden', 'true');
+
+    // 2) remover classe account-mode do header
+    const drawerHeader = document.querySelector('.drawer__header');
+    if (drawerHeader) {
+      drawerHeader.classList.remove('account-mode');
+    }
+
+    // 3) mostrar novamente o botão de fechar (se existir)
+    if (closeButton) {
+      closeButton.style.display = 'inline-flex';
+      closeButton.setAttribute('aria-hidden', 'false');
+    }
+
+    // 4) mostrar header principal, navegação principal e botão de login
+    elements.mainHeader.style.display = 'flex';
+    elements.mainHeader.setAttribute('aria-hidden', 'false');
+
+    elements.mainNavigation.style.display = 'block';
+    elements.mainNavigation.setAttribute('aria-hidden', 'false');
+
+    if (loginButton) {
+      loginButton.style.display = 'flex';
+      loginButton.setAttribute('aria-hidden', 'false');
+    }
+
+    // recolocar foco no trigger (se aplicável)
+    const trigger = document.querySelector('[data-drawer-trigger].is-active') ||
+                    document.querySelector('[data-drawer-trigger]');
+    if (trigger) trigger.focus();
+
+    updateDrawerDimensions();
+  }
+
 
   // ============================================
   // VERIFICAÇÃO DE COMPATIBILIDADE COM TEMA
@@ -979,6 +1424,9 @@ document.addEventListener('DOMContentLoaded', function() {
     elements.overlay.classList.add(DRAWER_CONFIG.OVERLAY_ACTIVE_CLASS);
     elements.body.classList.add(DRAWER_CONFIG.BODY_OPEN_CLASS);
     
+    // Certificar que voltamos à navegação principal ao abrir
+    showMainSection();
+    
     // Animar itens
     const items = elements.drawer.querySelectorAll('.appear-animation');
     items.forEach((item, index) => {
@@ -1006,6 +1454,9 @@ document.addEventListener('DOMContentLoaded', function() {
     items.forEach(item => {
       item.classList.remove(DRAWER_CONFIG.ANIMATE_CLASS);
     });
+
+    // Voltar para navegação principal quando fechar
+    showMainSection();
 
     // Retornar foco para o trigger
     const trigger = document.querySelector('[data-drawer-trigger].is-active') || 
@@ -1040,8 +1491,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function handleKeydown(e) {
     if (e.key === 'Escape' && elements.drawer.classList.contains(DRAWER_CONFIG.OPEN_CLASS)) {
-      closeDrawer();
+      // Se estamos na seção da conta, volta para a navegação principal
+      if (elements.accountNavigation && elements.accountNavigation.style.display !== 'none') {
+        showMainSection();
+      } else {
+        // Se estamos na navegação principal, fecha o drawer
+        closeDrawer();
+      }
     }
+  }
+
+  function handleAccountButtonClick(e) {
+    e.preventDefault();
+    showAccountSection();
+  }
+
+  function handleBackButtonClick(e) {
+    e.preventDefault();
+    showMainSection();
   }
 
   // ============================================
@@ -1099,6 +1566,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listener para prevenção de scroll
     if (elements.drawer) {
       elements.drawer.addEventListener('touchmove', handleDrawerTouchMove);
+    }
+
+    // Listeners para navegação da conta
+    if (elements.accountButton) {
+      elements.accountButton.addEventListener('click', handleAccountButtonClick);
+    }
+
+    if (elements.backButton) {
+      elements.backButton.addEventListener('click', handleBackButtonClick);
     }
 
     // Listeners para redimensionamento
@@ -1166,15 +1642,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calcular dimensões iniciais
     updateDrawerDimensions();
 
+    // Certificar que começamos na navegação principal
+    showMainSection();
+
     // Expor funções para debug
     window._drawer_controls = {
       open: openDrawer,
       close: closeDrawer,
+      showAccount: showAccountSection,
+      showMain: showMainSection,
       updateDimensions: updateDrawerDimensions,
       elements: elements
     };
 
-    console.log('Drawer inicializado com sucesso');
+    console.log('Drawer inicializado com sucesso com funcionalidade de conta');
   }
 
   // ============================================

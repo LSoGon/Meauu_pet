@@ -205,11 +205,11 @@
       "delete_confirm": "Deseja realmente excluir este endereço?"
     },
     "login": {
-      "title": "Entrar",
+      "title": "Olá, Meauu Migão",
       "email": "E-mail",
       "password": "Senha",
       "forgot_password": "Esqueceu sua senha?",
-      "sign_in": "Entrar",
+      "sign_in": "Continuar",
       "cancel": "Retornar à loja",
       "guest_title": "Prosseguir como convidado(a)",
       "guest_continue": "Prosseguir"

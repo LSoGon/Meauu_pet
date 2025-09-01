@@ -333,7 +333,6 @@ body {
 
 /* Header wrapper - APLICAR COR LARANJA AQUI */
 .header-wrapper {
-
   width: 100% !important;
   position: relative;
 }
@@ -1221,6 +1220,130 @@ body {
   }
 }
 
+
+/* ========================================
+   Exclusivo do cart drawer sheet
+   ======================================== */
+@media only screen and (max-width: 1024px) {
+  body.cart-drawer-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  .cart-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 2000 !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  body.cart-drawer-open .cart-drawer-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cart-drawer-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 65vh;
+    max-height: 85vh;
+    background: #fff;
+    border-radius: 40px 40px 0 0;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.18);
+    transform: translateY(110%);
+    transition: transform 0.36s cubic-bezier(.2,.9,.2,1);
+    z-index: 2001 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .cart-drawer-sheet.open {
+    transform: translateY(0);
+  }
+
+  .cart-drawer-sheet__handle { display:flex; justify-content:center; padding: 10px 0 0; }
+  .cart-drawer-sheet__drag { width: 56px; height: 6px; border-radius: 6px; background: #e9e9e9; }
+
+  .cart-drawer-sheet__header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 14px 18px; border-bottom: 1px solid #f0f0f0;
+  }
+  .cart-drawer-sheet__content { padding: 12px 18px; overflow-y:auto; flex:1; }
+
+  .cart-drawer-sheet__items { list-style:none; margin:0; padding:0; }
+  .cart-drawer-sheet__item { display:flex; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid #fafafa; }
+  .cart-drawer-sheet__thumb img { width:56px; height:56px; object-fit:cover; border-radius:6px; }
+  .cart-drawer-sheet__meta { flex:1; font-size:14px; }
+  .cart-drawer-sheet__price { white-space:nowrap; font-weight:600; }
+
+  .cart-drawer-sheet__footer { padding:12px 18px; border-top:1px solid #f0f0f0; background:#fff; }
+  .cart-drawer-sheet__subtotal { display:flex; justify-content:space-between; margin-bottom:10px; }
+  .cart-drawer-sheet__actions { display:flex; gap:10px; }
+
+  .cart-drawer-sheet__empty { text-align:center; padding:30px 12px; }
+}
+
+
+/* ========================================
+   CART DRAWER - DESKTOP (>= 1025px)
+   ======================================== */
+@media only screen and (min-width: 1025px) {
+  body.cart-drawer-open {
+    overflow: hidden;
+  }
+
+  .cart-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  body.cart-drawer-open .cart-drawer-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cart-drawer-sheet {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 25%;
+    min-width: 340px; /* fallback para telas menores */
+    max-width: 480px; /* limite opcional */
+    background: #fff;
+    box-shadow: -4px 0 18px rgba(0,0,0,0.15);
+    border-radius: 30px 0 0 30px;
+    transform: translateX(100%);
+    transition: transform 0.36s cubic-bezier(.2,.9,.2,1);
+    z-index: 2001;
+    display: flex;
+    flex-direction: column;
+  }
+  .cart-drawer-sheet.open {
+    transform: translateX(0);
+  }
+
+  /* Ajustes de layout */
+  .cart-drawer-sheet__handle { display:none; } /* barra de arrastar não faz sentido no desktop */
+  .cart-drawer-sheet__header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .cart-drawer-sheet__content { padding: 20px; flex: 1; overflow-y: auto; }
+  .cart-drawer-sheet__footer { padding: 20px; border-top: 1px solid #f0f0f0; background: #fff; }
+  .cart-drawer-sheet__empty { padding: 50px 20px; }
+}
+
+
+
 {% endstyle %}
 
 <div data-section-id="{{ section.id }}" data-section-type="header-section">
@@ -1919,6 +2042,42 @@ document.addEventListener('DOMContentLoaded', function() {
     getScrollState: () => scrollState,
     updateConfig: (newConfig) => Object.assign(CONFIG, newConfig)
   };
+
+  var cartDrawer = document.getElementById('CartDrawerSheet');
+  var cartBackdrop = document.getElementById('CartDrawerBackdrop');
+  var openBtns = document.querySelectorAll('.js-drawer-open-cart');
+  var closeBtns = document.querySelectorAll('.js-cart-drawer-close');
+
+  if (!cartDrawer) return;
+
+  var lastActive = null;
+
+  function openDrawer() {
+    lastActive = document.activeElement;
+    cartDrawer.classList.add('open');
+    document.body.classList.add('cart-drawer-open');
+    cartBackdrop.setAttribute('aria-hidden','false');
+  }
+  function closeDrawer() {
+    cartDrawer.classList.remove('open');
+    document.body.classList.remove('cart-drawer-open');
+    cartBackdrop.setAttribute('aria-hidden','true');
+    if (lastActive) lastActive.focus();
+  }
+
+  openBtns.forEach(btn => btn.addEventListener('click', e => {
+    e.preventDefault();
+    openDrawer();
+  }));
+  closeBtns.forEach(btn => btn.addEventListener('click', e => {
+    e.preventDefault();
+    closeDrawer();
+  }));
+  if (cartBackdrop) cartBackdrop.addEventListener('click', closeDrawer);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
 });
 </script>
-
